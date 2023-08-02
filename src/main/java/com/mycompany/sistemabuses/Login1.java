@@ -4,6 +4,10 @@
  */
 package com.mycompany.sistemabuses;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -173,6 +177,24 @@ try {
 }       catch (ClassNotFoundException ex) {
             Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+private void guardarRegistro(String registro) {
+    String rutaArchivo = "C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\Login\\log.txt";
+    try {
+        FileWriter escritor = new FileWriter(rutaArchivo, true);
+        PrintWriter out = new PrintWriter(new BufferedWriter(escritor));
+
+        out.println(registro);
+
+        out.close();
+        escritor.close();
+
+        System.out.println("Registro guardado en: " + rutaArchivo);
+    } catch (IOException e) {
+        System.out.println("Error al guardar el registro: " + e.getMessage());
+        e.printStackTrace();
+    }
+
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
