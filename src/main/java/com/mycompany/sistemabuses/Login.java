@@ -5,8 +5,14 @@
 package com.mycompany.sistemabuses;
 
 import java.awt.Image;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Types;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,17 +44,16 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jlbllogin_fondo = new javax.swing.JLabel();
         jbtnIngresar = new javax.swing.JButton();
         jpswClave = new javax.swing.JPasswordField();
         jLabel2 = new javax.swing.JLabel();
         jtxtUsuario = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jlbllogin_fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jlbllogin_fondo.setPreferredSize(new java.awt.Dimension(700, 396));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jbtnIngresar.setBackground(new java.awt.Color(0, 0, 0));
         jbtnIngresar.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -59,6 +64,7 @@ public class Login extends javax.swing.JFrame {
                 jbtnIngresarActionPerformed(evt);
             }
         });
+        getContentPane().add(jbtnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 320, -1, -1));
 
         jpswClave.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jpswClave.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(84, 229, 255)));
@@ -67,10 +73,12 @@ public class Login extends javax.swing.JFrame {
                 jpswClaveActionPerformed(evt);
             }
         });
+        getContentPane().add(jpswClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 280, 200, -1));
 
         jLabel2.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Clave");
+        jLabel2.setText("Clave:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 249, 40, -1));
 
         jtxtUsuario.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jtxtUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(84, 229, 255)));
@@ -79,79 +87,60 @@ public class Login extends javax.swing.JFrame {
                 jtxtUsuarioActionPerformed(evt);
             }
         });
+        getContentPane().add(jtxtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 210, 200, -1));
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Usuario");
+        jLabel4.setText("Usuario:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 178, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Ingrese sus credenciales para iniciar sesion");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, -1, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(270, 270, 270)
-                            .addComponent(jbtnIngresar))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(210, 210, 210)
-                            .addComponent(jpswClave, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(170, 170, 170)
-                            .addComponent(jLabel1))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(210, 210, 210)
-                            .addComponent(jtxtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(210, 210, 210)
-                            .addComponent(jLabel4))
-                        .addComponent(jlbllogin_fondo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(210, 210, 210)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 390, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(320, 320, 320)
-                            .addComponent(jbtnIngresar))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(280, 280, 280)
-                            .addComponent(jpswClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(140, 140, 140)
-                            .addComponent(jLabel1))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(210, 210, 210)
-                            .addComponent(jtxtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(180, 180, 180)
-                            .addComponent(jLabel4))
-                        .addComponent(jlbllogin_fondo, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(250, 250, 250)
-                            .addComponent(jLabel2)))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+        jlbllogin_fondo.setPreferredSize(new java.awt.Dimension(700, 396));
+        getContentPane().add(jlbllogin_fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 390));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnIngresarActionPerformed
+String usuario = jtxtUsuario.getText();
+    String clave = String.valueOf(jpswClave.getPassword());
 
+    if (usuario.isEmpty() || clave.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Debe ingresar un usuario y una clave", "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+        try {
+            // Llamar al procedimiento almacenado
+            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/paradasdebuses", "root", "2023")) {
+                // Llamar al procedimiento almacenado
+                String sql = "{CALL ValidarUsuario(?, ?, ?)}";
+                CallableStatement statement = connection.prepareCall(sql);
+                statement.setString(1, usuario);
+                statement.setString(2, clave);
+                statement.registerOutParameter(3, Types.INTEGER);
+                statement.execute();
+                
+                int existe = statement.getInt(3);
+                
+                if (existe == 1) {
+                    JOptionPane.showMessageDialog(this, "¡Bienvenido!", "Inicio de sesión exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    Sistema sistemaVentas = new Sistema();
+                    sistemaVentas.setVisible(true);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Usuario o clave incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+                statement.close();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
     }//GEN-LAST:event_jbtnIngresarActionPerformed
 
     private void jpswClaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jpswClaveActionPerformed

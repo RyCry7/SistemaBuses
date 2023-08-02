@@ -15,9 +15,9 @@ import java.sql.SQLException;
  * @author Asus
  */
 public class Conexion {
-      private String url = "jdbc:mysql://localhost:3306/profinal?zeroDateTimeBehavior=CONVERT_TO_NULL";
+      private String url = "jdbc:mysql://localhost:3306/paradasdebuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
     private String Usuario = "root";
-    private String clave = "2000";
+    private String clave = "2023";
 
     public ResultSet EjecutarSQL(String Sql) throws ClassNotFoundException {
 
