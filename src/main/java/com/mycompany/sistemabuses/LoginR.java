@@ -159,7 +159,7 @@ try {
             Administrador admin = new Administrador();
             admin.setVisible(true);
         } else if (rol.equalsIgnoreCase("2")) {
-            Administrador user = new Administrador();
+            Usuario user = new Usuario();
             user.setVisible(true);
         }
 
