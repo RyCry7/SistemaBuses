@@ -19,7 +19,7 @@ public class Conexion {
 
 
 
-    private String url = "jdbc:mysql://localhost:3306/proyecfinall?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private String url = "jdbc:mysql://localhost:3306/proyectobuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
     private String usuario = "root";
     private String clave = "2000";
 

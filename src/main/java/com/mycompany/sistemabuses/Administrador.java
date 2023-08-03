@@ -85,7 +85,7 @@ public class Administrador extends javax.swing.JFrame {
         pnParadasAdministrador = new javax.swing.JPanel();
         lblConsultaAdmin = new javax.swing.JLabel();
         cbxUbicacionAdmin = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
+        lblnombreUbiAdmin = new javax.swing.JLabel();
         txtNombreParAdmin = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblParadas = new javax.swing.JTable();
@@ -94,7 +94,7 @@ public class Administrador extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         lblLongitudAdmin = new javax.swing.JLabel();
         txtLongParAdmin = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        lblLatitud = new javax.swing.JLabel();
         txtLatitudPar = new javax.swing.JTextField();
         lblFondo = new javax.swing.JLabel();
         pnFormularioParadasAdministrador = new javax.swing.JPanel();
@@ -128,10 +128,10 @@ public class Administrador extends javax.swing.JFrame {
         cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "ANTONIO ANTE", "URCUQUI" }));
         pnParadasAdministrador.add(cbxUbicacionAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 67, 168, -1));
 
-        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("NOMBRE DE LA UBICACION DE  PARADA");
-        pnParadasAdministrador.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 36, -1, -1));
+        lblnombreUbiAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblnombreUbiAdmin.setForeground(new java.awt.Color(255, 255, 255));
+        lblnombreUbiAdmin.setText("NOMBRE DE LA UBICACION DE  PARADA");
+        pnParadasAdministrador.add(lblnombreUbiAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 36, -1, -1));
         pnParadasAdministrador.add(txtNombreParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 67, 276, -1));
 
         tblParadas.setModel(new javax.swing.table.DefaultTableModel(
@@ -195,10 +195,10 @@ public class Administrador extends javax.swing.JFrame {
         pnParadasAdministrador.add(lblLongitudAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(1007, 36, -1, -1));
         pnParadasAdministrador.add(txtLongParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(953, 67, 173, -1));
 
-        jLabel5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("LATITUD");
-        pnParadasAdministrador.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(117, 107, -1, -1));
+        lblLatitud.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblLatitud.setForeground(new java.awt.Color(255, 255, 255));
+        lblLatitud.setText("LATITUD");
+        pnParadasAdministrador.add(lblLatitud, new org.netbeans.lib.awtextra.AbsoluteConstraints(117, 107, -1, -1));
         pnParadasAdministrador.add(txtLatitudPar, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 132, 168, -1));
         pnParadasAdministrador.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 1260, 510));
 
@@ -389,16 +389,16 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JButton btnModificarAmin;
     private javax.swing.JComboBox<String> cbxParadas;
     private javax.swing.JComboBox<String> cbxUbicacionAdmin;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblConsultaAdmin;
     private javax.swing.JLabel lblFondo;
     private javax.swing.JLabel lblFondo1;
+    private javax.swing.JLabel lblLatitud;
     private javax.swing.JLabel lblLongitudAdmin;
     private javax.swing.JLabel lblParadas;
+    private javax.swing.JLabel lblnombreUbiAdmin;
     private javax.swing.JPanel pnFormularioParadasAdministrador;
     private javax.swing.JPanel pnParadasAdministrador;
     private javax.swing.JPanel pnTarifaAdministrador;

@@ -90,7 +90,7 @@
                           <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                           <Component id="cbxEmbarque" min="-2" pref="176" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jComboBox4" min="-2" pref="180" max="-2" attributes="0"/>
+                          <Component id="cbxDesembarqueUsu" min="-2" pref="180" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="183" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
@@ -110,7 +110,7 @@
                           <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                           <Component id="lblEmbraque" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDesembarqueUsu" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="203" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -121,12 +121,12 @@
                           <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblEmbraque" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblDesembarqueUsu" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="cbxEmbarque" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jComboBox4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxDesembarqueUsu" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                           <Component id="btnConsultar" min="-2" max="-2" attributes="0"/>
@@ -146,7 +146,7 @@
                     <Property name="text" type="java.lang.String" value="Lugar de embarque"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel4">
+                <Component class="javax.swing.JLabel" name="lblDesembarqueUsu">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="1"/>
@@ -228,7 +228,7 @@
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="jComboBox4">
+                <Component class="javax.swing.JComboBox" name="cbxDesembarqueUsu">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="1"/>
@@ -404,7 +404,7 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                                              <Component id="cbxCiudades" min="-2" pref="194" max="-2" attributes="0"/>
+                                              <Component id="cbxCiudadesUsu" min="-2" pref="194" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
@@ -412,7 +412,7 @@
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="317" max="-2" attributes="0"/>
-                                      <Component id="jLabel5" min="-2" pref="261" max="-2" attributes="0"/>
+                                      <Component id="lblSeleccionFavoritaUsu" min="-2" pref="261" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -428,12 +428,12 @@
                               <Group type="102" attributes="0">
                                   <Component id="lblSelecionAdmin" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cbxCiudades" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cbxCiudadesUsu" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jScrollPane1" min="-2" pref="107" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblSeleccionFavoritaUsu" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="lblImagen1" min="-2" pref="392" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -450,7 +450,7 @@
                     <Property name="text" type="java.lang.String" value="SELECCIONE SU UBICACION"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="cbxCiudades">
+                <Component class="javax.swing.JComboBox" name="cbxCiudadesUsu">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="1"/>
@@ -465,7 +465,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cbxCiudadesMouseClicked"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cbxCiudadesUsuMouseClicked"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -507,7 +507,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JLabel" name="jLabel5">
+                <Component class="javax.swing.JLabel" name="lblSeleccionFavoritaUsu">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="14" style="1"/>

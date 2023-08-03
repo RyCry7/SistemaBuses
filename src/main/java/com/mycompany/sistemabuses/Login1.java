@@ -87,7 +87,7 @@ public class Login1 extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(202, 233, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, -1, -1));
 
         lblCrearUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lblCrearUsu.setForeground(new java.awt.Color(255, 255, 255));
@@ -141,7 +141,7 @@ try {
     String usuario = txtUsuario.getText();
     String clave = String.valueOf(pswClave.getPassword());
 
-    String consulta = "SELECT Usuario, Rol FROM login WHERE Usuario = ? AND Contrasenia = ?";
+    String consulta = "SELECT USU_Usuario, ROL_ID FROM USU_Usuario WHERE Usuario = ? AND USU_Contraseña = ?";
     Conexion cn = new Conexion();
     PreparedStatement pstmt = cn.prepareStatement(consulta);
     pstmt.setString(1, usuario);
@@ -149,12 +149,12 @@ try {
     ResultSet rs = pstmt.executeQuery();
 
     if (rs.next()) {
-        String rol = rs.getString("Rol");
+        String rol = rs.getString("ROL_ID");
         // Aquí puedes redirigir a diferentes JFrames según el rol del usuario
-        if (rol.equalsIgnoreCase("administrador")) {
+        if (rol.equalsIgnoreCase("1")) {
             Administrador admin = new Administrador();
             admin.setVisible(true);
-        } else if (rol.equalsIgnoreCase("usuario")) {
+        } else if (rol.equalsIgnoreCase("2")) {
             Usuario user = new Usuario();
             user.setVisible(true);
         }

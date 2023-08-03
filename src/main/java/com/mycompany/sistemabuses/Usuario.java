@@ -61,12 +61,12 @@ public class Usuario extends javax.swing.JFrame {
         tbpUsuario = new javax.swing.JTabbedPane();
         pnPrecioUsuario = new javax.swing.JPanel();
         lblEmbraque = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        lblDesembarqueUsu = new javax.swing.JLabel();
         btnConsultar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDatosPrecio = new javax.swing.JTable();
         cbxEmbarque = new javax.swing.JComboBox<>();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        cbxDesembarqueUsu = new javax.swing.JComboBox<>();
         pnHorarioUsuario = new javax.swing.JPanel();
         lblHorarioAdmin = new javax.swing.JLabel();
         cbxHorarioAdmin = new javax.swing.JComboBox<>();
@@ -75,10 +75,10 @@ public class Usuario extends javax.swing.JFrame {
         btnConsultarAdmin = new javax.swing.JButton();
         pnParadasUsuario = new javax.swing.JPanel();
         lblSelecionAdmin = new javax.swing.JLabel();
-        cbxCiudades = new javax.swing.JComboBox<>();
+        cbxCiudadesUsu = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
+        lblSeleccionFavoritaUsu = new javax.swing.JLabel();
         lblImagen1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,8 +92,8 @@ public class Usuario extends javax.swing.JFrame {
         lblEmbraque.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblEmbraque.setText("Lugar de embarque");
 
-        jLabel4.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel4.setText("Lugar de desembarque");
+        lblDesembarqueUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lblDesembarqueUsu.setText("Lugar de desembarque");
 
         btnConsultar.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnConsultar.setText("CONSULTAR");
@@ -127,8 +127,8 @@ public class Usuario extends javax.swing.JFrame {
         cbxEmbarque.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         cbxEmbarque.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terminal Ibarra", "Panaderia los Colombianos", "Milagro de Ibarra", "Parque central Imbaya", "Santiago de Rey", "Urcuqui", "IST 17 Julio" }));
 
-        jComboBox4.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terminal Ibarra", "Panaderia los Colombianos", "Milagro de Ibarra", "Parque central Imbaya", "Santiago de Rey", "Urcuqui", "IST 17 Julio" }));
+        cbxDesembarqueUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        cbxDesembarqueUsu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terminal Ibarra", "Panaderia los Colombianos", "Milagro de Ibarra", "Parque central Imbaya", "Santiago de Rey", "Urcuqui", "IST 17 Julio" }));
 
         javax.swing.GroupLayout pnPrecioUsuarioLayout = new javax.swing.GroupLayout(pnPrecioUsuario);
         pnPrecioUsuario.setLayout(pnPrecioUsuarioLayout);
@@ -138,7 +138,7 @@ public class Usuario extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(183, 183, 183))
             .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
                 .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,7 +153,7 @@ public class Usuario extends javax.swing.JFrame {
                 .addGap(50, 50, 50)
                 .addComponent(lblEmbraque)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4)
+                .addComponent(lblDesembarqueUsu)
                 .addGap(203, 203, 203))
         );
         pnPrecioUsuarioLayout.setVerticalGroup(
@@ -162,11 +162,11 @@ public class Usuario extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEmbraque)
-                    .addComponent(jLabel4))
+                    .addComponent(lblDesembarqueUsu))
                 .addGap(8, 8, 8)
                 .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addComponent(btnConsultar)
                 .addGap(59, 59, 59)
@@ -242,11 +242,11 @@ public class Usuario extends javax.swing.JFrame {
         lblSelecionAdmin.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lblSelecionAdmin.setText("SELECCIONE SU UBICACION");
 
-        cbxCiudades.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        cbxCiudades.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "URCUQUI", "ANTONI ANTE", " " }));
-        cbxCiudades.addMouseListener(new java.awt.event.MouseAdapter() {
+        cbxCiudadesUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        cbxCiudadesUsu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "URCUQUI", "ANTONI ANTE", " " }));
+        cbxCiudadesUsu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cbxCiudadesMouseClicked(evt);
+                cbxCiudadesUsuMouseClicked(evt);
             }
         });
 
@@ -271,8 +271,8 @@ public class Usuario extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jLabel5.setText("SELECCIONE SU PARADA FAVOTITA");
+        lblSeleccionFavoritaUsu.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblSeleccionFavoritaUsu.setText("SELECCIONE SU PARADA FAVOTITA");
 
         javax.swing.GroupLayout pnParadasUsuarioLayout = new javax.swing.GroupLayout(pnParadasUsuario);
         pnParadasUsuario.setLayout(pnParadasUsuarioLayout);
@@ -289,12 +289,12 @@ public class Usuario extends javax.swing.JFrame {
                                     .addComponent(lblSelecionAdmin))
                                 .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                                     .addGap(44, 44, 44)
-                                    .addComponent(cbxCiudades, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(58, 58, 58)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                             .addGap(317, 317, 317)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(316, Short.MAX_VALUE))
         );
         pnParadasUsuarioLayout.setVerticalGroup(
@@ -305,10 +305,10 @@ public class Usuario extends javax.swing.JFrame {
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                         .addComponent(lblSelecionAdmin)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxCiudades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel5)
+                .addComponent(lblSeleccionFavoritaUsu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -353,7 +353,7 @@ public class Usuario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnConsultarActionPerformed
 
-    private void cbxCiudadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxCiudadesMouseClicked
+    private void cbxCiudadesUsuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxCiudadesUsuMouseClicked
     //  Object seleObject = cbxCiudades.getSelectedItem();
  //if(seleObject.equals("IBARRA"));
  //{
@@ -367,7 +367,7 @@ public class Usuario extends javax.swing.JFrame {
      
 
      
-    }//GEN-LAST:event_cbxCiudadesMouseClicked
+    }//GEN-LAST:event_cbxCiudadesUsuMouseClicked
 
     /**
      * @param args the command line arguments
@@ -407,20 +407,20 @@ public class Usuario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnConsultarAdmin;
-    private javax.swing.JComboBox<String> cbxCiudades;
+    private javax.swing.JComboBox<String> cbxCiudadesUsu;
+    private javax.swing.JComboBox<String> cbxDesembarqueUsu;
     private javax.swing.JComboBox<String> cbxEmbarque;
     private javax.swing.JComboBox<String> cbxHorarioAdmin;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblDesembarqueUsu;
     private javax.swing.JLabel lblEmbraque;
     private javax.swing.JLabel lblHorarioAdmin;
     private javax.swing.JLabel lblImagen1;
+    private javax.swing.JLabel lblSeleccionFavoritaUsu;
     private javax.swing.JLabel lblSelecionAdmin;
     private javax.swing.JPanel pnHorarioUsuario;
     private javax.swing.JPanel pnParadasUsuario;
