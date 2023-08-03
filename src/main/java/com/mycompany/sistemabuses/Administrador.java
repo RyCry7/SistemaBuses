@@ -52,28 +52,28 @@ public class Administrador extends javax.swing.JFrame {
 // ...
 
 public void MostrarcbxUbicacion() {
-    try {
-        String combo = "SELECT DISTINCT UBI_Nombre FROM ubicacion ";
-        Conexion con = new Conexion();
-        ResultSet resultado = con.EjecutarSQL(combo);
+     try {
+            String combo = "SELECT DISTINCT UBI_Nombre FROM ubicacion ";
+            Conexion con = new Conexion();
+            ResultSet resultado = con.EjecutarSQL(combo);
 
-        // Limpiar el combo box antes de agregar los nuevos elementos
-        cbxUbicacionAdmin.removeAllItems();
+            // Limpiar el combo box antes de agregar los nuevos elementos
+            cbxUbicacionAdmin.removeAllItems();
 
-        // Agregar los datos del resultado al combo box
-        while (resultado.next()) {
-            String ubicacion = resultado.getString("UBI_Nombre");
-            cbxUbicacionAdmin.addItem(ubicacion);
+            // Agregar los datos del resultado al combo box
+            while (resultado.next()) {
+                String ubicacion = resultado.getString("UBI_Nombre");
+                cbxUbicacionAdmin.addItem(ubicacion);
+            }
+
+            // Cerrar la conexión y el resultado (si es necesario)
+            resultado.close();
+            con.close();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // Cerrar la conexión y el resultado (si es necesario)
-        resultado.close();
-        con.close();
-    } catch (ClassNotFoundException ex) {
-        Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (SQLException ex) {
-        Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-    }
 }
 
             
@@ -162,6 +162,7 @@ public void MostrarcbxUbicacion() {
         pnParadasAdministrador.add(lblConsultaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 36, -1, -1));
 
         cbxUbicacionAdmin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "ANTONIO ANTE ", "URCUQUI", "YACHAY" }));
         cbxUbicacionAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbxUbicacionAdminMouseClicked(evt);

@@ -99,7 +99,12 @@
                       <Font name="Segoe UI" size="12" style="1"/>
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="0"/>
+                      <StringArray count="4">
+                        <StringItem index="0" value="IBARRA"/>
+                        <StringItem index="1" value="ANTONIO ANTE "/>
+                        <StringItem index="2" value="URCUQUI"/>
+                        <StringItem index="3" value="YACHAY"/>
+                      </StringArray>
                     </Property>
                   </Properties>
                   <Events>
