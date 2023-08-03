@@ -15,6 +15,7 @@ public class Sistema extends javax.swing.JFrame {
      */
     public Sistema() {
         initComponents();
+        
     }
 
     /**
