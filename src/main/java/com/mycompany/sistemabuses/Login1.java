@@ -4,6 +4,7 @@
  */
 package com.mycompany.sistemabuses;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -55,7 +56,8 @@ public class Login1 extends javax.swing.JFrame {
         txtUsuario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        lblCrearUsu = new javax.swing.JLabel();
+        lblRegistro = new javax.swing.JLabel();
         pswClave = new javax.swing.JPasswordField();
         lblImagen = new javax.swing.JLabel();
 
@@ -87,15 +89,36 @@ public class Login1 extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(202, 233, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("¿NO TIENES CUENTA?  REGISTRARSE");
-        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblCrearUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lblCrearUsu.setForeground(new java.awt.Color(255, 255, 255));
+        lblCrearUsu.setText("¿NO TIENES UNA CUENTA?");
+        lblCrearUsu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel4MouseClicked(evt);
+                lblCrearUsuMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblCrearUsuMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblCrearUsuMouseExited(evt);
             }
         });
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 274, 221, -1));
+        getContentPane().add(lblCrearUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 270, 160, -1));
+
+        lblRegistro.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lblRegistro.setText("REGISTRATE");
+        lblRegistro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblRegistroMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblRegistroMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblRegistroMouseExited(evt);
+            }
+        });
+        getContentPane().add(lblRegistro, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 90, -1));
 
         pswClave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,13 +131,10 @@ public class Login1 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
-        Creacion_Login crea = new Creacion_Login();
-        crea.setVisible(true);
-        crea.setTitle("CREACION DE USUARIO");
-        this.setVisible(false);
+    private void lblCrearUsuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCrearUsuMouseClicked
 
-    }//GEN-LAST:event_jLabel4MouseClicked
+      
+    }//GEN-LAST:event_lblCrearUsuMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 try {
@@ -175,6 +195,30 @@ private void guardarRegistro(String registro) {
         // TODO add your handling code here:
     }//GEN-LAST:event_pswClaveActionPerformed
 
+    private void lblCrearUsuMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCrearUsuMouseEntered
+    
+    }//GEN-LAST:event_lblCrearUsuMouseEntered
+
+    private void lblCrearUsuMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCrearUsuMouseExited
+
+    }//GEN-LAST:event_lblCrearUsuMouseExited
+
+    private void lblRegistroMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseEntered
+         lblRegistro.setForeground(Color.WHITE);
+    }//GEN-LAST:event_lblRegistroMouseEntered
+
+    private void lblRegistroMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseExited
+      lblRegistro.setForeground(new Color(84,229,255));
+    }//GEN-LAST:event_lblRegistroMouseExited
+
+    private void lblRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseClicked
+       Creacion_Login crea = new Creacion_Login();
+        crea.setVisible(true);
+        crea.setTitle("CREACION DE USUARIO");
+        this.setVisible(false);
+
+    }//GEN-LAST:event_lblRegistroMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -215,8 +259,9 @@ private void guardarRegistro(String registro) {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblCrearUsu;
     private javax.swing.JLabel lblImagen;
+    private javax.swing.JLabel lblRegistro;
     private javax.swing.JPasswordField pswClave;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
