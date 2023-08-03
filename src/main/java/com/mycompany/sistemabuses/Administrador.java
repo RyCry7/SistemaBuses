@@ -6,6 +6,9 @@ package com.mycompany.sistemabuses;
 
 import java.awt.Image;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -41,8 +44,40 @@ public class Administrador extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+         
     }
+   
+   
+
+// ...
+
+public void MostrarcbxUbicacion() {
+    try {
+        String combo = "SELECT DISTINCT UBI_Nombre FROM ubicacion ";
+        Conexion con = new Conexion();
+        ResultSet resultado = con.EjecutarSQL(combo);
+
+        // Limpiar el combo box antes de agregar los nuevos elementos
+        cbxUbicacionAdmin.removeAllItems();
+
+        // Agregar los datos del resultado al combo box
+        while (resultado.next()) {
+            String ubicacion = resultado.getString("UBI_Nombre");
+            cbxUbicacionAdmin.addItem(ubicacion);
+        }
+
+        // Cerrar la conexión y el resultado (si es necesario)
+        resultado.close();
+        con.close();
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (SQLException ex) {
+        Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
+
+            
+ 
 
     public void mostrarDatosActualizar() {
         //muestra en la secuencia que se encuentra ubicado en la tabla
@@ -93,7 +128,11 @@ public class Administrador extends javax.swing.JFrame {
         lblLongitudAdmin = new javax.swing.JLabel();
         txtLongParAdmin = new javax.swing.JTextField();
         lblLatitud = new javax.swing.JLabel();
+        txtTiempoSalida = new javax.swing.JTextField();
         txtLatitudPar = new javax.swing.JTextField();
+        txtTiempoLLegada = new javax.swing.JTextField();
+        lblSalida = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         lblFondo = new javax.swing.JLabel();
         pnFormularioParadasAdministrador = new javax.swing.JPanel();
         lblParadas = new javax.swing.JLabel();
@@ -123,7 +162,11 @@ public class Administrador extends javax.swing.JFrame {
         pnParadasAdministrador.add(lblConsultaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 36, -1, -1));
 
         cbxUbicacionAdmin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "ANTONIO ANTE", "URCUQUI" }));
+        cbxUbicacionAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cbxUbicacionAdminMouseClicked(evt);
+            }
+        });
         pnParadasAdministrador.add(cbxUbicacionAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, 168, -1));
 
         lblnombreUbiAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -159,7 +202,7 @@ public class Administrador extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tblParadas);
 
-        pnParadasAdministrador.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 955, 147));
+        pnParadasAdministrador.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 940, 147));
 
         btnCrearAdmin.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnCrearAdmin.setText("CREAR");
@@ -186,20 +229,41 @@ public class Administrador extends javax.swing.JFrame {
                 btnEliminarActionPerformed(evt);
             }
         });
-        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 230, -1, -1));
+        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 230, -1, -1));
 
         lblLongitudAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblLongitudAdmin.setForeground(new java.awt.Color(255, 255, 255));
         lblLongitudAdmin.setText("LONGITUD");
-        pnParadasAdministrador.add(lblLongitudAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(1007, 36, -1, -1));
-        pnParadasAdministrador.add(txtLongParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(953, 67, 173, -1));
+        pnParadasAdministrador.add(lblLongitudAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 40, -1, -1));
+        pnParadasAdministrador.add(txtLongParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 70, 173, -1));
 
         lblLatitud.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblLatitud.setForeground(new java.awt.Color(255, 255, 255));
         lblLatitud.setText("LATITUD");
         pnParadasAdministrador.add(lblLatitud, new org.netbeans.lib.awtextra.AbsoluteConstraints(117, 107, -1, -1));
+
+        txtTiempoSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTiempoSalidaActionPerformed(evt);
+            }
+        });
+        pnParadasAdministrador.add(txtTiempoSalida, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 130, 220, -1));
         pnParadasAdministrador.add(txtLatitudPar, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 132, 168, -1));
-        pnParadasAdministrador.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 1260, 510));
+
+        txtTiempoLLegada.setForeground(new java.awt.Color(255, 255, 255));
+        pnParadasAdministrador.add(txtTiempoLLegada, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 130, 210, 20));
+
+        lblSalida.setBackground(new java.awt.Color(255, 255, 255));
+        lblSalida.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblSalida.setForeground(new java.awt.Color(255, 255, 255));
+        lblSalida.setText("TIEMPO ESTIMADO DE LLEGADA DESDE IBARRA");
+        pnParadasAdministrador.add(lblSalida, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 100, 410, -1));
+
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("TIEMPO ESTIMADO DE LLEGADA DESDE  YACHAY");
+        pnParadasAdministrador.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 100, 370, -1));
+        pnParadasAdministrador.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-160, 0, 1420, 510));
 
         tbpAdministrador.addTab("CREACION DE PARADAS", pnParadasAdministrador);
 
@@ -345,6 +409,14 @@ public class Administrador extends javax.swing.JFrame {
         filas = seleccion;
     }//GEN-LAST:event_tblParadasMouseClicked
 
+    private void txtTiempoSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTiempoSalidaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTiempoSalidaActionPerformed
+
+    private void cbxUbicacionAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxUbicacionAdminMouseClicked
+     MostrarcbxUbicacion();
+    }//GEN-LAST:event_cbxUbicacionAdminMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -388,6 +460,7 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JButton btnModificarAmin;
     private javax.swing.JComboBox<String> cbxParadas;
     private javax.swing.JComboBox<String> cbxUbicacionAdmin;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -397,6 +470,7 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JLabel lblLatitud;
     private javax.swing.JLabel lblLongitudAdmin;
     private javax.swing.JLabel lblParadas;
+    private javax.swing.JLabel lblSalida;
     private javax.swing.JLabel lblnombreUbiAdmin;
     private javax.swing.JPanel pnFormularioParadasAdministrador;
     private javax.swing.JPanel pnParadasAdministrador;
@@ -408,5 +482,7 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JTextField txtLongParAdmin;
     private javax.swing.JTextField txtNombreParAdmin;
     private javax.swing.JTextField txtParadasBusqueda;
+    private javax.swing.JTextField txtTiempoLLegada;
+    private javax.swing.JTextField txtTiempoSalida;
     // End of variables declaration//GEN-END:variables
 }
