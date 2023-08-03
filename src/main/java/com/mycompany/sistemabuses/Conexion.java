@@ -10,68 +10,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author Asus
- */
 public class Conexion {
-<<<<<<< HEAD
-      private String url = "jdbc:mysql://localhost:3306/paradasdebuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    private String Usuario = "root";
-    private String clave = "2023";
-=======
 
+    private String url = "jdbc:mysql://localhost:3306/ralmeida?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private String usuario = "ralmeida";
+    private String clave = "ralmeida.2023";
 
-
-
-    private String url = "jdbc:mysql://localhost:3306/proyectobuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    private String usuario = "root";
-    private String clave = "2000";
->>>>>>> 7a795663c36fa22496c153e88cf461fcf16fab58
-
-    public Connection conectar() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(url, usuario, clave);
-    }
-
-    public ResultSet EjecutarSQL(String sql) throws ClassNotFoundException, SQLException {
+    public ResultSet EjecutaSQL(String Sql) throws ClassNotFoundException, SQLException {
         ResultSet resultado = null;
         try {
-            Connection con = conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection Con = DriverManager.getConnection(url, usuario, clave);
+            PreparedStatement pst = Con.prepareStatement(Sql);
             resultado = pst.executeQuery();
+            return resultado;
         } catch (SQLException e) {
-            e.printStackTrace();
+            return resultado;
         }
-        return resultado;
-    }
 
-    public void EjecutarCli(String sql) throws ClassNotFoundException {
-        try {
-            Connection con = conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
+    }
+    
+    public void EjecutarCli (String Sql) throws ClassNotFoundException {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection Con = DriverManager.getConnection(url, usuario, clave);
+            PreparedStatement pst = Con.prepareStatement(Sql);
             pst.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e){
+            
         }
-    }
-
-    public PreparedStatement prepareStatement(String sql) throws SQLException, ClassNotFoundException {
-        Connection con = conectar();
-        return con.prepareStatement(sql);
-    }
-
-
-   // PreparedStatement prepareStatement(String consulta) {
-    //    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  //  }
-
-
-    Object getConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    void cerrarConexion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
