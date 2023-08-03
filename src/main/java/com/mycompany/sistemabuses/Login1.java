@@ -171,10 +171,8 @@ try {
     }
 } catch (SQLException ex) {
     Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
-}       catch (ClassNotFoundException ex) {
             Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    }}
 private void guardarRegistro(String registro) {
     String rutaArchivo = "C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\Login\\log.txt";
     try {

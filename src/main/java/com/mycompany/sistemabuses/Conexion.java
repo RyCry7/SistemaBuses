@@ -12,11 +12,13 @@ import java.sql.SQLException;
 
 public class Conexion {
 
-    private String url = "jdbc:mysql://localhost:3306/ralmeida?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    private String usuario = "ralmeida";
-    private String clave = "ralmeida.2023";
+    private String url = "jdbc:mysql://localhost:3306/proyectobuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private String usuario = "root";
+    private String clave = "2023";
 
-    public ResultSet EjecutaSQL(String Sql) throws ClassNotFoundException, SQLException {
+    public ResultSet
+            
+            EjecutaSQL(String Sql) throws ClassNotFoundException, SQLException {
         ResultSet resultado = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -39,5 +41,13 @@ public class Conexion {
         } catch (SQLException e){
             
         }
+    }
+
+    ResultSet EjecutarSQL(String select__from_usuario) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    PreparedStatement prepareStatement(String consulta) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
