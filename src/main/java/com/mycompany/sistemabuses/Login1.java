@@ -141,7 +141,7 @@ try {
     String usuario = txtUsuario.getText();
     String clave = String.valueOf(pswClave.getPassword());
 
-    String consulta = "SELECT USU_Usuario, ROL_ID FROM USU_Usuario WHERE Usuario = ? AND USU_Contraseña = ?";
+    String consulta = "SELECT USU_Usuario, ROL_ID FROM usuario WHERE USU_Usuario = ? AND USU_Contraseña = ?";
     Conexion cn = new Conexion();
     PreparedStatement pstmt = cn.prepareStatement(consulta);
     pstmt.setString(1, usuario);
