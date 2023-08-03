@@ -47,15 +47,14 @@ public class Administrador extends javax.swing.JFrame {
     public void mostrarDatosActualizar() {
         //muestra en la secuencia que se encuentra ubicado en la tabla
         DefaultTableModel tenc1 = new DefaultTableModel();
-        tenc1.addColumn("N° PARADA");
-        tenc1.addColumn("UBICACION");
+     
         tenc1.addColumn("NOMBRE DE LA PARADA");
         tenc1.addColumn("LONGITUD");
         tenc1.addColumn("LATITUD");
 
         tblParadas.setModel(tenc1);
-        String actualizar = "select * from paradas";
-        String[] datos = new String[5];
+        String actualizar = "select PAR_NOMBRE,PAR_LATITUD, PAR_LONGITUD   from paradas ; ";
+        String[] datos = new String[3];
 
         try {
 
@@ -65,8 +64,7 @@ public class Administrador extends javax.swing.JFrame {
                 datos[0] = resultado.getString(1);
                 datos[1] = resultado.getString(2);
                 datos[2] = resultado.getString(3);
-                datos[3] = resultado.getString(4);
-                datos[4] = resultado.getString(5);
+                
 
                 tenc1.addRow(datos);
             }
@@ -136,17 +134,17 @@ public class Administrador extends javax.swing.JFrame {
 
         tblParadas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "N°PARADAS", "UBICACION", "NOMBRE DE LA PARADA", "LONGITUD", "LATITUD"
+                "NOMBRE DE LA PARADA", "LATITUD", "LONGITUD"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
