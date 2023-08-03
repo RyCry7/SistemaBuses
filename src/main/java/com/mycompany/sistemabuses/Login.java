@@ -87,7 +87,7 @@ public class Login extends javax.swing.JFrame {
                 jtxtUsuarioActionPerformed(evt);
             }
         });
-        getContentPane().add(jtxtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 210, 200, -1));
+        getContentPane().add(jtxtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 200, -1));
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
