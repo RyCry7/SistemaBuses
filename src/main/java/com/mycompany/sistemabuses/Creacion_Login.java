@@ -155,7 +155,7 @@ public class Creacion_Login extends javax.swing.JFrame {
             System.out.println("//////" + insertar);
             Conexion con = new Conexion();
             JOptionPane.showMessageDialog(null, "INGRESO EXITOSO");
-            LoginR log = new LoginR();
+            Login1 log = new Login1();
             log.setVisible(true);
             this.setVisible(false);
             try {

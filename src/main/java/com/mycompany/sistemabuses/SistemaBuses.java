@@ -23,7 +23,7 @@ public class SistemaBuses {
         } catch (Exception e) {
             System.out.println("error de consulta");
         }
-        LoginR usu = new LoginR();
+        Login1 usu = new Login1();
         usu.setVisible(true);
         
     }

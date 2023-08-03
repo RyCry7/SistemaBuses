@@ -23,12 +23,12 @@ import javax.swing.JOptionPane;
  *
  * @author Asus
  */
-public class LoginR extends javax.swing.JFrame {
+public class Login1 extends javax.swing.JFrame {
 
     public static String regUsuario = "";
     String regClave = "";
     
-    public LoginR() {
+    public Login1() {
         initComponents();
         setLocationRelativeTo(null);
         try {
@@ -169,9 +169,9 @@ try {
         JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
     }
 } catch (SQLException ex) {
-    Logger.getLogger(LoginR.class.getName()).log(Level.SEVERE, null, ex);
+    Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
 }       catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoginR.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 private void guardarRegistro(String registro) {
@@ -236,14 +236,22 @@ private void guardarRegistro(String registro) {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -256,7 +264,7 @@ private void guardarRegistro(String registro) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginR().setVisible(true);
+                new Login1().setVisible(true);
             }
         });
     }
