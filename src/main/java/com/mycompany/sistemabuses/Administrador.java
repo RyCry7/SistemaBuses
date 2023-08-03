@@ -132,6 +132,7 @@ public class Administrador extends javax.swing.JFrame {
         pnParadasAdministrador.add(lblnombreUbiAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 36, -1, -1));
         pnParadasAdministrador.add(txtNombreParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 67, 276, -1));
 
+        tblParadas.setBackground(new java.awt.Color(84, 229, 255));
         tblParadas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},

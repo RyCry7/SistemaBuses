@@ -155,7 +155,7 @@ public class Creacion_Login extends javax.swing.JFrame {
         if (cedula.isEmpty() || nombre.isEmpty() ) {
             JOptionPane.showMessageDialog(null, "NO DEJAR CAMPOS VACIOS");
         } else {
-            String insertar = ("call proyecfinall.new_procedure('"+cedula+"', '"+nombre+"', '"+apellido+"', '"+correo+"', '"+usuario+"', '"+clave+"');");
+            String insertar = ("call proyectobuses.insUsuario('"+cedula+"', '"+nombre+"', '"+usuario+"', '"+apellido+"', '"+clave+"', '"+correo+"');");
 
             System.out.println("//////" + insertar);
             Conexion con = new Conexion();
