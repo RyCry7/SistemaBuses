@@ -29,6 +29,8 @@ public class Administrador extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         mostrarDatosActualizar();
         MostrarcbxUbicacion();
+        mostrarDatosParFavoritas();
+
         try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\WhatsApp Image 2023-08-02 at 10.53.41.jpeg");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblFondo.getWidth(), lblFondo.getHeight(), Image.SCALE_DEFAULT));
@@ -56,10 +58,9 @@ public class Administrador extends javax.swing.JFrame {
             String combo = "SELECT UBI_Nombre FROM ubicacion; ";
             ResultSet resulSet = c1.EjecutarSQL(combo);
             while (resulSet.next()) {
-                  
+
                 String nombre = resulSet.getString("UBI_Nombre");
                 cbxUbicacionAdmin.addItem(nombre);
-                
 
             }
         } catch (Exception e) {
@@ -96,6 +97,71 @@ public class Administrador extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR EN LA CONSULTA", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void mostrarDatosParFavoritas() {
+        //muestra en la secuencia que se encuentra ubicado en la tabla
+        DefaultTableModel tenc1 = new DefaultTableModel();
+
+        tenc1.addColumn("USUARIO");
+        tenc1.addColumn("PARADA FAVORITA");
+
+        tblParadasFavoritasAdmi.setModel(tenc1);
+        String actualizar = "SELECT parfav.USU_Cedula, paradas.PAR_Nombre FROM parfav  JOIN paradas ON parfav.PAR_ID = paradas.PAR_ID";
+
+        String[] datos = new String[2];
+
+        try {
+
+            Conexion con = new Conexion();
+            ResultSet resultado = con.EjecutarSQL(actualizar);
+            while (resultado.next()) {
+                datos[0] = resultado.getString(1);
+                datos[1] = resultado.getString(2);
+
+                tenc1.addRow(datos);
+            }
+            tblParadasFavoritasAdmi.setModel(tenc1);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR EN LA CONSULTA", JOptionPane.ERROR_MESSAGE);
+        }
+    }/*
+
+    public void mostrarDatosParBusqueda(int opbuscar, String valor) {
+        //muestra en la secuencia que se encuentra ubicado en la tabla
+        DefaultTableModel tenc1 = new DefaultTableModel();
+
+        tenc1.addColumn("USUARIO");
+        tenc1.addColumn("PARADA FAVORITA");
+
+        tblParadasFavoritasAdmi.setModel(tenc1);
+        String codsql = null;
+        if (opbuscar == 0 && valor == null) {
+            codsql =("SELECT parfav.USU_Cedula, paradas.PAR_Nombre FROM parfav  JOIN paradas ON parfav.PAR_ID = paradas.PAR_ID");
+          } else {
+            if (opbuscar == 1 && valor != null) {
+                codsql =("SELECT parfav.USU_Cedula, paradas.PAR_Nombre FROM parfav JOIN paradas ON parfav.PAR_ID = paradas.PAR_ID WHERE paradas.PAR_Nombre = ?");
+        } else {
+                    codsql =("SELECT parfav.USU_Cedula, paradas.PAR_Nombre FROM parfav  JOIN paradas ON parfav.PAR_ID = paradas.PAR_ID");
+            }
+        }
+
+        String[] datos = new String[2];
+
+        try {
+
+            Conexion con = new Conexion();
+            ResultSet resultado = con.EjecutarSQL(codsql);
+            while (resultado.next()) {
+                datos[0] = resultado.getString(1);
+                datos[1] = resultado.getString(2);
+
+                tenc1.addRow(datos);
+            }
+            tblParadasFavoritasAdmi.setModel(tenc1);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR EN LA CONSULTA", JOptionPane.ERROR_MESSAGE);
+        }
+    }*/
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -269,30 +335,41 @@ public class Administrador extends javax.swing.JFrame {
 
         btnBuscar.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnBuscar.setText("CONSULTAR");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
         pnFormularioParadasAdministrador.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(949, 48, -1, -1));
 
+        tblParadasFavoritasAdmi.setBackground(new java.awt.Color(84, 229, 255));
         tblParadasFavoritasAdmi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "USUARIO", "UBICACION", "NOMBRE DE LA UBICACION PARADA"
+                "USUARIO", "NOMBRE DE LA UBICACION PARADA"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        tblParadasFavoritasAdmi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblParadasFavoritasAdmiMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblParadasFavoritasAdmi);
 
-        pnFormularioParadasAdministrador.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 157, 914, 190));
+        pnFormularioParadasAdministrador.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 914, 190));
         pnFormularioParadasAdministrador.add(lblFondo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 1260, 510));
 
         tbpAdministrador.addTab("FORMULARIO DE PARADAS FAVORITAS", pnFormularioParadasAdministrador);
@@ -344,6 +421,8 @@ public class Administrador extends javax.swing.JFrame {
         String nombre = txtNombreParAdmin.getText();
         String latitud = txtLatitudPar.getText();
         String longitud = txtLongParAdmin.getText();
+        String tiempoIba = txtTiempoSalida.getText();
+        String tiempo = txtTiempoLLegada.getText();
 
         if (nombre.isEmpty() || latitud.isEmpty() || longitud.isEmpty()) {
             JOptionPane.showMessageDialog(null, "NO DEJAR CAMPOS VACIOS");
@@ -381,6 +460,7 @@ public class Administrador extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Se eliminó el registro correctamente");
         } catch (Exception e) {
         }
+
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarAminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarAminActionPerformed
@@ -404,6 +484,17 @@ public class Administrador extends javax.swing.JFrame {
     private void cbxUbicacionAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxUbicacionAdminMouseClicked
         MostrarcbxUbicacion();
     }//GEN-LAST:event_cbxUbicacionAdminMouseClicked
+
+    private void tblParadasFavoritasAdmiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblParadasFavoritasAdmiMouseClicked
+
+                                         
+    }//GEN-LAST:event_tblParadasFavoritasAdmiMouseClicked
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+      /* int opcion = cbxParadas.getSelectedIndex();
+        String valorbus = txtParadasBusqueda.getText();
+        mostrarDatosParBusqueda (opcion, valorbus);*/
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
     /**
      * @param args the command line arguments
