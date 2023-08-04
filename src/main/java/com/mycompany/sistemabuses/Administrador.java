@@ -4,9 +4,15 @@
  */
 package com.mycompany.sistemabuses;
 
+import com.google.protobuf.TextFormat.ParseException;
 import java.awt.Image;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -44,40 +50,8 @@ public class Administrador extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         
+
     }
-   
-   
-
-// ...
-
-public void MostrarcbxUbicacion() {
-     try {
-            String combo = "SELECT DISTINCT UBI_Nombre FROM ubicacion ";
-            Conexion con = new Conexion();
-            ResultSet resultado = con.EjecutarSQL(combo);
-
-            // Limpiar el combo box antes de agregar los nuevos elementos
-            cbxUbicacionAdmin.removeAllItems();
-
-            // Agregar los datos del resultado al combo box
-            while (resultado.next()) {
-                String ubicacion = resultado.getString("UBI_Nombre");
-                cbxUbicacionAdmin.addItem(ubicacion);
-            }
-
-            // Cerrar la conexión y el resultado (si es necesario)
-            resultado.close();
-            con.close();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
-
-            
- 
 
     public void mostrarDatosActualizar() {
         //muestra en la secuencia que se encuentra ubicado en la tabla
@@ -128,11 +102,11 @@ public void MostrarcbxUbicacion() {
         lblLongitudAdmin = new javax.swing.JLabel();
         txtLongParAdmin = new javax.swing.JTextField();
         lblLatitud = new javax.swing.JLabel();
-        txtTiempoSalida = new javax.swing.JTextField();
         txtLatitudPar = new javax.swing.JTextField();
-        txtTiempoLLegada = new javax.swing.JTextField();
-        lblSalida = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jspnTiempoYachayParAdmin = new javax.swing.JSpinner();
+        lblnombreUbiAdmin1 = new javax.swing.JLabel();
+        lblnombreUbiAdmin2 = new javax.swing.JLabel();
+        jspnTiempoIbarraParAdmin = new javax.swing.JSpinner();
         lblFondo = new javax.swing.JLabel();
         pnFormularioParadasAdministrador = new javax.swing.JPanel();
         lblParadas = new javax.swing.JLabel();
@@ -162,21 +136,20 @@ public void MostrarcbxUbicacion() {
         pnParadasAdministrador.add(lblConsultaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 36, -1, -1));
 
         cbxUbicacionAdmin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "ANTONIO ANTE ", "URCUQUI", "YACHAY" }));
-        cbxUbicacionAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cbxUbicacionAdminMouseClicked(evt);
+        cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ibarra", "Antonio Ante", "Urcuquí", "Yachay", " " }));
+        cbxUbicacionAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxUbicacionAdminActionPerformed(evt);
             }
         });
         pnParadasAdministrador.add(cbxUbicacionAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, 168, -1));
 
         lblnombreUbiAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblnombreUbiAdmin.setForeground(new java.awt.Color(255, 255, 255));
-        lblnombreUbiAdmin.setText("NOMBRE DE LA UBICACION DE  PARADA");
-        pnParadasAdministrador.add(lblnombreUbiAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 36, -1, -1));
+        lblnombreUbiAdmin.setText("Tiempo desde ibarra");
+        pnParadasAdministrador.add(lblnombreUbiAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 120, 120, -1));
         pnParadasAdministrador.add(txtNombreParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 67, 276, -1));
 
-        tblParadas.setBackground(new java.awt.Color(84, 229, 255));
         tblParadas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -203,7 +176,7 @@ public void MostrarcbxUbicacion() {
         });
         jScrollPane2.setViewportView(tblParadas);
 
-        pnParadasAdministrador.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 940, 147));
+        pnParadasAdministrador.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 955, 147));
 
         btnCrearAdmin.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnCrearAdmin.setText("CREAR");
@@ -230,41 +203,36 @@ public void MostrarcbxUbicacion() {
                 btnEliminarActionPerformed(evt);
             }
         });
-        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 230, -1, -1));
+        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 230, -1, -1));
 
         lblLongitudAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblLongitudAdmin.setForeground(new java.awt.Color(255, 255, 255));
         lblLongitudAdmin.setText("LONGITUD");
-        pnParadasAdministrador.add(lblLongitudAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 40, -1, -1));
-        pnParadasAdministrador.add(txtLongParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 70, 173, -1));
+        pnParadasAdministrador.add(lblLongitudAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(1007, 36, -1, -1));
+        pnParadasAdministrador.add(txtLongParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(953, 67, 173, -1));
 
         lblLatitud.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblLatitud.setForeground(new java.awt.Color(255, 255, 255));
         lblLatitud.setText("LATITUD");
         pnParadasAdministrador.add(lblLatitud, new org.netbeans.lib.awtextra.AbsoluteConstraints(117, 107, -1, -1));
-
-        txtTiempoSalida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTiempoSalidaActionPerformed(evt);
-            }
-        });
-        pnParadasAdministrador.add(txtTiempoSalida, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 130, 220, -1));
         pnParadasAdministrador.add(txtLatitudPar, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 132, 168, -1));
 
-        txtTiempoLLegada.setForeground(new java.awt.Color(255, 255, 255));
-        pnParadasAdministrador.add(txtTiempoLLegada, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 130, 210, 20));
+        jspnTiempoYachayParAdmin.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
+        pnParadasAdministrador.add(jspnTiempoYachayParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 170, -1, -1));
 
-        lblSalida.setBackground(new java.awt.Color(255, 255, 255));
-        lblSalida.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        lblSalida.setForeground(new java.awt.Color(255, 255, 255));
-        lblSalida.setText("TIEMPO ESTIMADO DE LLEGADA DESDE IBARRA");
-        pnParadasAdministrador.add(lblSalida, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 100, 410, -1));
+        lblnombreUbiAdmin1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblnombreUbiAdmin1.setForeground(new java.awt.Color(255, 255, 255));
+        lblnombreUbiAdmin1.setText("NOMBRE DE LA UBICACION DE  PARADA");
+        pnParadasAdministrador.add(lblnombreUbiAdmin1, new org.netbeans.lib.awtextra.AbsoluteConstraints(463, 36, -1, -1));
 
-        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("TIEMPO ESTIMADO DE LLEGADA DESDE  YACHAY");
-        pnParadasAdministrador.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 100, 370, -1));
-        pnParadasAdministrador.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-160, 0, 1420, 510));
+        lblnombreUbiAdmin2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblnombreUbiAdmin2.setForeground(new java.awt.Color(255, 255, 255));
+        lblnombreUbiAdmin2.setText("Tiempo desde YAchay");
+        pnParadasAdministrador.add(lblnombreUbiAdmin2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, 120, -1));
+
+        jspnTiempoIbarraParAdmin.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
+        pnParadasAdministrador.add(jspnTiempoIbarraParAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 120, -1, -1));
+        pnParadasAdministrador.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 1260, 510));
 
         tbpAdministrador.addTab("CREACION DE PARADAS", pnParadasAdministrador);
 
@@ -353,35 +321,76 @@ public void MostrarcbxUbicacion() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCrearAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearAdminActionPerformed
-        String ubicacion = (String) cbxUbicacionAdmin.getSelectedItem();
+ try {
         String nombre = txtNombreParAdmin.getText();
-        String latitud = txtLatitudPar.getText();
-        String longitud = txtLongParAdmin.getText();
+        double latitud = Double.parseDouble(txtLatitudPar.getText());
+        double longitud = Double.parseDouble(txtLongParAdmin.getText());
+        int ubiID = obtenerUbiID((String) cbxUbicacionAdmin.getSelectedItem()); // Obtener el ID de ubicación del combo box
 
-        if (nombre.isEmpty() || latitud.isEmpty() || longitud.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "NO DEJAR CAMPOS VACIOS");
-        } else {
-            String insertar = ("call proyecfinall.Nparadas('" + ubicacion + "', '" + nombre + "','" + latitud + "','" + longitud + "');");
-            System.out.println("////" + insertar);
-            Conexion con = new Conexion();
-            JOptionPane.showMessageDialog(null, "INGRESO EXITOSO");
+        // Obtener los valores de los JSpinners como objetos Object
+        Object tiempoDesdeIbarraObj = jspnTiempoIbarraParAdmin.getValue();
+        Object tiempoDesdeYachayObj = jspnTiempoYachayParAdmin.getValue();
 
-            try {
-                con.EjecutarCli(insertar);
+        // Convertir los valores Object a enteros representando los minutos
+        int minutosIbarra = (int) tiempoDesdeIbarraObj;
+        int minutosYachay = (int) tiempoDesdeYachayObj;
 
-                // Agregar datos a la tabla en la primera fila
-                DefaultTableModel model = (DefaultTableModel) tblParadas.getModel();
-                model.insertRow(0, new Object[]{ubicacion, nombre, latitud, longitud});
+        // Crear objetos Time y establecer los minutos obtenidos
+        Time tiempoDesdeIbarra = Time.valueOf(String.format("00:%02d:00", minutosIbarra));
+        Time tiempoDesdeYachay = Time.valueOf(String.format("00:%02d:00", minutosYachay));
 
-            } catch (Exception e) {
-                // e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "NO SE INGRESO LA PARADA");
-            }
-        }
+        Connection connection = new Conexion().conectar();
 
+        // Llamar al procedimiento almacenado para insertar una nueva parada
+        String sql = "{CALL InsertarParada(?, ?, ?, ?, ?, ?)}";
+        CallableStatement statement = connection.prepareCall(sql);
+        statement.setString(1, nombre);
+        statement.setDouble(2, latitud);
+        statement.setDouble(3, longitud);
+        statement.setInt(4, ubiID);
+        statement.setTime(5, tiempoDesdeIbarra);
+        statement.setTime(6, tiempoDesdeYachay);
+        statement.execute();
 
+        statement.close();
+        connection.close();
+
+        JOptionPane.showMessageDialog(this, "Parada ingresada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Error al ingresar los datos. Verifica que los campos numéricos contengan valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }//GEN-LAST:event_btnCrearAdminActionPerformed
 
+    
+    
+   private int obtenerUbiID(String nombreUbicacion) throws SQLException, ClassNotFoundException {
+    int ubiID = -1; // Valor por defecto si no se encuentra el nombre de ubicación
+
+    String sql = "SELECT ubi_id FROM ubicacion WHERE ubi_nombre = ?";
+    Connection connection = new Conexion().conectar();
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setString(1, nombreUbicacion);
+    ResultSet resultSet = statement.executeQuery();
+
+    if (resultSet.next()) {
+        ubiID = resultSet.getInt("ubi_id");
+    }
+
+    resultSet.close();
+    statement.close();
+    connection.close();
+
+    return ubiID;
+}
+
+
+    
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
       
         String eliminar = ("call proyecfinall.eli_Par(?);");
@@ -410,13 +419,9 @@ public void MostrarcbxUbicacion() {
         filas = seleccion;
     }//GEN-LAST:event_tblParadasMouseClicked
 
-    private void txtTiempoSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTiempoSalidaActionPerformed
+    private void cbxUbicacionAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxUbicacionAdminActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtTiempoSalidaActionPerformed
-
-    private void cbxUbicacionAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxUbicacionAdminMouseClicked
-     MostrarcbxUbicacion();
-    }//GEN-LAST:event_cbxUbicacionAdminMouseClicked
+    }//GEN-LAST:event_cbxUbicacionAdminActionPerformed
 
     /**
      * @param args the command line arguments
@@ -444,6 +449,7 @@ public void MostrarcbxUbicacion() {
             java.util.logging.Logger.getLogger(Administrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -461,18 +467,20 @@ public void MostrarcbxUbicacion() {
     private javax.swing.JButton btnModificarAmin;
     private javax.swing.JComboBox<String> cbxParadas;
     private javax.swing.JComboBox<String> cbxUbicacionAdmin;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSpinner jspnTiempoIbarraParAdmin;
+    private javax.swing.JSpinner jspnTiempoYachayParAdmin;
     private javax.swing.JLabel lblConsultaAdmin;
     private javax.swing.JLabel lblFondo;
     private javax.swing.JLabel lblFondo1;
     private javax.swing.JLabel lblLatitud;
     private javax.swing.JLabel lblLongitudAdmin;
     private javax.swing.JLabel lblParadas;
-    private javax.swing.JLabel lblSalida;
     private javax.swing.JLabel lblnombreUbiAdmin;
+    private javax.swing.JLabel lblnombreUbiAdmin1;
+    private javax.swing.JLabel lblnombreUbiAdmin2;
     private javax.swing.JPanel pnFormularioParadasAdministrador;
     private javax.swing.JPanel pnParadasAdministrador;
     private javax.swing.JPanel pnTarifaAdministrador;
@@ -483,7 +491,5 @@ public void MostrarcbxUbicacion() {
     private javax.swing.JTextField txtLongParAdmin;
     private javax.swing.JTextField txtNombreParAdmin;
     private javax.swing.JTextField txtParadasBusqueda;
-    private javax.swing.JTextField txtTiempoLLegada;
-    private javax.swing.JTextField txtTiempoSalida;
     // End of variables declaration//GEN-END:variables
 }
