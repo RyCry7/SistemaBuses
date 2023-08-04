@@ -270,7 +270,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
                                           <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                          <Component id="cbxHorarioAdmin" min="-2" pref="271" max="-2" attributes="0"/>
+                                          <Component id="cbxHorariousuario" min="-2" pref="271" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
                                           <Component id="btnConsultarAdmin" min="-2" max="-2" attributes="0"/>
                                       </Group>
@@ -293,7 +293,7 @@
                           <Component id="lblHorarioAdmin" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cbxHorarioAdmin" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxHorariousuario" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnConsultarAdmin" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
@@ -312,19 +312,13 @@
                     <Property name="text" type="java.lang.String" value="SELECCIONE EL HORARIO A CONSULTAR"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="cbxHorarioAdmin">
+                <Component class="javax.swing.JComboBox" name="cbxHorariousuario">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="SansSerif" size="12" style="1"/>
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="5">
-                        <StringItem index="0" value="Ibarra-Yachay 06:40 "/>
-                        <StringItem index="1" value="Ibarra-Yachay 07:10"/>
-                        <StringItem index="2" value="Ibarra-Yachay 07:20"/>
-                        <StringItem index="3" value="Ibarra-Yachay 07:30"/>
-                        <StringItem index="4" value="Ibarra-Yachay 07:50"/>
-                      </StringArray>
+                      <StringArray count="0"/>
                     </Property>
                   </Properties>
                   <AuxValues>
@@ -473,21 +467,15 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTable" name="jTable1">
+                    <Component class="javax.swing.JTable" name="tblParadasCer">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="2" rowCount="4">
-                            <Column editable="true" title="UBICACION" type="java.lang.String"/>
-                            <Column editable="true" title="PARADA CERCANA" type="java.lang.Object"/>
+                          <Table columnCount="1" rowCount="4">
+                            <Column editable="true" title="PARADA CERCANA" type="java.lang.String"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>
