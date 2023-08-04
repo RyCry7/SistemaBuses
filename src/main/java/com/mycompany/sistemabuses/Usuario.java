@@ -87,12 +87,12 @@ public class Usuario extends javax.swing.JFrame {
         } catch (Exception e) {
 
         }
-        }
+        }///aquiii
         public void MostrarcbxEMBARQUE() {
         Conexion c1 = new Conexion();
         try {
 
-            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
+            String combo = "SELECT RUT_Ubi_A ,RUT_Ubi_B , rut_tarifa FROM proyectobuses.rutas  where RUT_Ubi_A='?' and RUT_Ubi_B='?';";
             ResultSet resulSet = c1.EjecutarSQL(combo);
             while (resulSet.next()) {
 
