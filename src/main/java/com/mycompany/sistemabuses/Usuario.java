@@ -25,6 +25,9 @@ public class Usuario extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         MostrarcbxUbicacion();
         MostrarcbxHorario() ;
+        MostrarcbxEMBARQUE();
+        MostrarcbxDesembarque();
+        
 
         try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaIbarra.jpg");
@@ -84,6 +87,39 @@ public class Usuario extends javax.swing.JFrame {
         } catch (Exception e) {
 
         }
+        }
+        public void MostrarcbxEMBARQUE() {
+        Conexion c1 = new Conexion();
+        try {
+
+            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+
+                String nombre = resulSet.getString("UBI_Nombre");
+                cbxEmbarque.addItem(nombre);
+
+            }
+        } catch (Exception e) {
+
+        }
+        }
+        public void MostrarcbxDesembarque() {
+        Conexion c1 = new Conexion();
+        try {
+
+            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+
+                String nombre = resulSet.getString("UBI_Nombre");
+                cbxEmbarque.addItem(nombre);
+
+            }
+        } catch (Exception e) {
+
+        }
+
 
     }
 
@@ -159,7 +195,6 @@ public class Usuario extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblDatosPrecio);
 
         cbxEmbarque.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        cbxEmbarque.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terminal Ibarra", "Panaderia los Colombianos", "Milagro de Ibarra", "Parque central Imbaya", "Santiago de Rey", "Urcuqui", "IST 17 Julio" }));
 
         cbxDesembarqueUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         cbxDesembarqueUsu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terminal Ibarra", "Panaderia los Colombianos", "Milagro de Ibarra", "Parque central Imbaya", "Santiago de Rey", "Urcuqui", "IST 17 Julio" }));
@@ -169,22 +204,22 @@ public class Usuario extends javax.swing.JFrame {
         pnPrecioUsuarioLayout.setHorizontalGroup(
             pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 759, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addGap(490, 490, 490)
+                        .addComponent(btnConsultar)))
+                .addContainerGap(431, Short.MAX_VALUE))
+            .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(183, 183, 183))
             .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                        .addGap(108, 108, 108)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                        .addGap(311, 311, 311)
-                        .addComponent(btnConsultar)))
-                .addContainerGap(640, Short.MAX_VALUE))
-            .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(89, 89, 89)
                 .addComponent(lblEmbraque)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblDesembarqueUsu)
