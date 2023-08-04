@@ -28,7 +28,8 @@ public class Administrador extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         mostrarDatosActualizar();
-         try {
+        MostrarcbxUbicacion();
+        try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\WhatsApp Image 2023-08-02 at 10.53.41.jpeg");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblFondo.getWidth(), lblFondo.getHeight(), Image.SCALE_DEFAULT));
             lblFondo.setIcon(icono);
@@ -36,7 +37,7 @@ public class Administrador extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         try {
+        try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\WhatsApp Image 2023-08-02 at 10.53.41.jpeg");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblFondo1.getWidth(), lblFondo1.getHeight(), Image.SCALE_DEFAULT));
             lblFondo1.setIcon(icono);
@@ -44,45 +45,33 @@ public class Administrador extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         
+
     }
-   
-   
 
 // ...
+    public void MostrarcbxUbicacion() {
+        Conexion c1 = new Conexion();
+        try {
 
-public void MostrarcbxUbicacion() {
-     try {
-            String combo = "SELECT DISTINCT UBI_Nombre FROM ubicacion ";
-            Conexion con = new Conexion();
-            ResultSet resultado = con.EjecutarSQL(combo);
+            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+                  
+                String nombre = resulSet.getString("UBI_Nombre");
+                cbxUbicacionAdmin.addItem(nombre);
+                
 
-            // Limpiar el combo box antes de agregar los nuevos elementos
-            cbxUbicacionAdmin.removeAllItems();
-
-            // Agregar los datos del resultado al combo box
-            while (resultado.next()) {
-                String ubicacion = resultado.getString("UBI_Nombre");
-                cbxUbicacionAdmin.addItem(ubicacion);
             }
+        } catch (Exception e) {
 
-            // Cerrar la conexión y el resultado (si es necesario)
-            resultado.close();
-            con.close();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
 
-            
- 
+    }
 
     public void mostrarDatosActualizar() {
         //muestra en la secuencia que se encuentra ubicado en la tabla
         DefaultTableModel tenc1 = new DefaultTableModel();
-     
+
         tenc1.addColumn("NOMBRE DE LA PARADA");
         tenc1.addColumn("LONGITUD");
         tenc1.addColumn("LATITUD");
@@ -99,7 +88,6 @@ public void MostrarcbxUbicacion() {
                 datos[0] = resultado.getString(1);
                 datos[1] = resultado.getString(2);
                 datos[2] = resultado.getString(3);
-                
 
                 tenc1.addRow(datos);
             }
@@ -162,7 +150,6 @@ public void MostrarcbxUbicacion() {
         pnParadasAdministrador.add(lblConsultaAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 36, -1, -1));
 
         cbxUbicacionAdmin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cbxUbicacionAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "ANTONIO ANTE ", "URCUQUI", "YACHAY" }));
         cbxUbicacionAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbxUbicacionAdminMouseClicked(evt);
@@ -230,7 +217,7 @@ public void MostrarcbxUbicacion() {
                 btnEliminarActionPerformed(evt);
             }
         });
-        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 230, -1, -1));
+        pnParadasAdministrador.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 240, -1, -1));
 
         lblLongitudAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblLongitudAdmin.setForeground(new java.awt.Color(255, 255, 255));
@@ -383,7 +370,7 @@ public void MostrarcbxUbicacion() {
     }//GEN-LAST:event_btnCrearAdminActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-      
+
         String eliminar = ("call proyecfinall.eli_Par(?);");
         System.out.println("/////" + eliminar);
 
@@ -415,7 +402,7 @@ public void MostrarcbxUbicacion() {
     }//GEN-LAST:event_txtTiempoSalidaActionPerformed
 
     private void cbxUbicacionAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbxUbicacionAdminMouseClicked
-     MostrarcbxUbicacion();
+        MostrarcbxUbicacion();
     }//GEN-LAST:event_cbxUbicacionAdminMouseClicked
 
     /**

@@ -124,16 +124,16 @@ public class Creacion_Login extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 714, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 714, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,11 +146,11 @@ public class Creacion_Login extends javax.swing.JFrame {
         String correo = txtCorreo.getText();
         String usuario = txtUsuario.getText();
         String clave = txtClave.getText();
-
-        if (cedula.isEmpty() || nombre.isEmpty()) {
+       
+        if (cedula.isEmpty() || nombre.isEmpty() ) {
             JOptionPane.showMessageDialog(null, "NO DEJAR CAMPOS VACIOS");
         } else {
-            String insertar = ("call proyectobuses.insUsuario('" + cedula + "', '" + nombre + "', '" + usuario + "', '" + apellido + "', '" + clave + "', '" + correo + "');");
+            String insertar = ("call proyectobuses.insUsuario('"+cedula+"', '"+nombre+"', '"+usuario+"', '"+apellido+"', '"+clave+"', '"+correo+"');");
 
             System.out.println("//////" + insertar);
             Conexion con = new Conexion();
@@ -193,6 +193,7 @@ public class Creacion_Login extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Creacion_Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

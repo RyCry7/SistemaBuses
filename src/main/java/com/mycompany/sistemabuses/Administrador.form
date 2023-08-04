@@ -99,12 +99,7 @@
                       <Font name="Segoe UI" size="12" style="1"/>
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="4">
-                        <StringItem index="0" value="IBARRA"/>
-                        <StringItem index="1" value="ANTONIO ANTE "/>
-                        <StringItem index="2" value="URCUQUI"/>
-                        <StringItem index="3" value="YACHAY"/>
-                      </StringArray>
+                      <StringArray count="0"/>
                     </Property>
                   </Properties>
                   <Events>
@@ -239,7 +234,7 @@
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="970" y="230" width="-1" height="-1"/>
+                      <AbsoluteConstraints x="970" y="240" width="-1" height="-1"/>
                     </Constraint>
                   </Constraints>
                 </Component>

@@ -21,7 +21,7 @@ public class Conexion {
 
     private String url = "jdbc:mysql://localhost:3306/proyectobuses?zeroDateTimeBehavior=CONVERT_TO_NULL";
     private String usuario = "root";
-    private String clave = "2023";
+    private String clave = "2000";
 
     public Connection conectar() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");

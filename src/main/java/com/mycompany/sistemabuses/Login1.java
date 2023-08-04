@@ -216,7 +216,9 @@ private void guardarRegistro(String registro) {
     }//GEN-LAST:event_lblRegistroMouseExited
 
     private void lblRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseClicked
-      
+Creacion_Login crea = new Creacion_Login();
+crea.setVisible(true);
+this.setVisible(false);
     }//GEN-LAST:event_lblRegistroMouseClicked
 
     /**
