@@ -32,7 +32,7 @@ public class Login1 extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         try {
-            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\login.png");
+            ImageIcon wallpaper = new ImageIcon("C:\\Users\\richi\\OneDrive\\Documentos\\NetBeansProjects\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\login.png");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_DEFAULT));
             lblImagen.setIcon(icono);
             this.repaint();
