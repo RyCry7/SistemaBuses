@@ -5,9 +5,18 @@
 package com.mycompany.sistemabuses;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +29,8 @@ public class Usuario extends javax.swing.JFrame {
      */
     public Usuario() {
         initComponents();
+        inicializarComboBoxCiudades();
+        cargarCiudadesEnComboBox(cbxCiudadesUsu);
         setLocationRelativeTo(null);
         try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaIbarra.jpg");
@@ -47,7 +58,100 @@ public class Usuario extends javax.swing.JFrame {
         }
        
     }
+    
+    
+         public void cargarParadasCercanas() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) jtblParadasCercanas.getModel();
+        modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
 
+        String nombreCiudadSeleccionada = (String) cbxCiudadesUsu.getSelectedItem();
+        int ubiID = obtenerIDUbicacion(nombreCiudadSeleccionada);
+
+        try {
+            Connection connection = new Conexion().conectar();
+
+            String sql = "SELECT PAR_Nombre, PAR_Latitud, PAR_Longitud FROM PARADAS WHERE UBI_ID = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ubiID);
+            ResultSet result = statement.executeQuery();
+
+            // Agregar las paradas cercanas a la tabla
+            while (result.next()) {
+                String nombreParada = result.getString("PAR_Nombre");
+                double latitud = result.getDouble("PAR_Latitud");
+                double longitud = result.getDouble("PAR_Longitud");
+                modeloTabla.addRow(new Object[] { nombreParada, latitud, longitud });
+            }
+
+            result.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // Método para obtener el ID de una ubicación a partir de su nombre
+    public int obtenerIDUbicacion(String nombreUbicacion) {
+        int ubiID = -1;
+        try {
+            Connection connection = new Conexion().conectar();
+
+            String sql = "SELECT UBI_ID FROM UBICACION WHERE UBI_Nombre = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, nombreUbicacion);
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                ubiID = result.getInt("UBI_ID");
+            }
+
+            result.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return ubiID;
+    }
+    
+    public void cargarCiudadesEnComboBox(JComboBox<String> comboBox) {
+        comboBox.removeAllItems(); // Limpiamos el combo box antes de cargar los datos
+
+        try {
+            Connection connection = new Conexion().conectar();
+
+            String sql = "SELECT UBI_Nombre FROM UBICACION";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
+
+            // Agregamos los nombres de las ciudades al combo box
+            while (result.next()) {
+                String nombreCiudad = result.getString("UBI_Nombre");
+                comboBox.addItem(nombreCiudad);
+            }
+
+            result.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+public void inicializarComboBoxCiudades() {
+        cbxCiudadesUsu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarParadasCercanas();
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,7 +181,7 @@ public class Usuario extends javax.swing.JFrame {
         lblSelecionAdmin = new javax.swing.JLabel();
         cbxCiudadesUsu = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtblParadasCercanas = new javax.swing.JTable();
         lblSeleccionFavoritaUsu = new javax.swing.JLabel();
         lblImagen1 = new javax.swing.JLabel();
 
@@ -243,33 +347,37 @@ public class Usuario extends javax.swing.JFrame {
         lblSelecionAdmin.setText("SELECCIONE SU UBICACION");
 
         cbxCiudadesUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        cbxCiudadesUsu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IBARRA", "URCUQUI", "ANTONI ANTE", " " }));
         cbxCiudadesUsu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbxCiudadesUsuMouseClicked(evt);
             }
         });
+        cbxCiudadesUsu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxCiudadesUsuActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtblParadasCercanas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "UBICACION", "PARADA CERCANA"
+                "Nombre", "Latitud", "Longitud"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Double.class, java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtblParadasCercanas);
 
         lblSeleccionFavoritaUsu.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblSeleccionFavoritaUsu.setText("SELECCIONE SU PARADA FAVOTITA");
@@ -280,34 +388,41 @@ public class Usuario extends javax.swing.JFrame {
             pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                 .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                            .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                                    .addGap(65, 65, 65)
-                                    .addComponent(lblSelecionAdmin))
-                                .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                                    .addGap(44, 44, 44)
-                                    .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(58, 58, 58)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                            .addGap(317, 317, 317)
-                            .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(316, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                                .addGap(65, 65, 65)
+                                .addComponent(lblSelecionAdmin))
+                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                                .addGap(44, 44, 44)
+                                .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(199, 199, 199)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                                .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(51, 51, 51))
+                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                                .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(455, 455, 455)))))
+                .addContainerGap(265, Short.MAX_VALUE))
         );
         pnParadasUsuarioLayout.setVerticalGroup(
             pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
                 .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
                         .addComponent(lblSelecionAdmin)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(81, 81, 81))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnParadasUsuarioLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addComponent(lblSeleccionFavoritaUsu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -369,6 +484,10 @@ public class Usuario extends javax.swing.JFrame {
      
     }//GEN-LAST:event_cbxCiudadesUsuMouseClicked
 
+    private void cbxCiudadesUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCiudadesUsuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxCiudadesUsuActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -415,7 +534,7 @@ public class Usuario extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jtblParadasCercanas;
     private javax.swing.JLabel lblDesembarqueUsu;
     private javax.swing.JLabel lblEmbraque;
     private javax.swing.JLabel lblHorarioAdmin;
