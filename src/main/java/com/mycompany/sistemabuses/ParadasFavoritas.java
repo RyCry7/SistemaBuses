@@ -4,7 +4,10 @@
  */
 package com.mycompany.sistemabuses;
 
+import java.awt.Image;
 import java.sql.ResultSet;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,6 +23,15 @@ public class ParadasFavoritas extends javax.swing.JFrame {
     public ParadasFavoritas() {
         initComponents();
         mostrarDatosParFavoritas();
+         
+        try {
+            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\login.png");
+            Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_DEFAULT));
+            lblImagen.setIcon(icono);
+            this.repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void mostrarDatosParFavoritas() {
@@ -27,8 +39,8 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         DefaultTableModel tenc1 = new DefaultTableModel();
 
         tenc1.addColumn("USUARIO");
-        tenc1.addColumn("UBICACION");
         tenc1.addColumn("PARADA FAVORITA");
+        tenc1.addColumn("UBICACION");
 
         tblFormulario.setModel(tenc1);
         String actualizar = "SELECT usuario.usu_nombre, paradas.par_nombre, ubicacion.UBI_Nombre FROM parfav JOIN usuario ON parfav.usu_cedula = usuario.usu_cedula JOIN paradas ON parfav.par_id = paradas.par_id JOIN ubicacion ON paradas.ubi_id = ubicacion.UBI_ID";
@@ -60,6 +72,7 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblFormulario = new javax.swing.JTable();
         lblFormulario = new javax.swing.JLabel();
+        lblImagen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,7 +86,7 @@ public class ParadasFavoritas extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "CEDULA", "UBICACION", "PARADA FAVORITA"
+                "CEDULA", "PARADA FAVORITA", "UBICACION"
             }
         ) {
             Class[] types = new Class [] {
@@ -86,12 +99,13 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblFormulario);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 460, 150));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 520, 250));
 
         lblFormulario.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         lblFormulario.setForeground(new java.awt.Color(255, 255, 255));
         lblFormulario.setText("FORMULARI DE PARADAS FAVORITAS");
         jPanel1.add(lblFormulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 350, -1));
+        jPanel1.add(lblImagen, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 590, 400));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,7 +115,7 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -146,6 +160,7 @@ public class ParadasFavoritas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFormulario;
+    private javax.swing.JLabel lblImagen;
     private javax.swing.JTable tblFormulario;
     // End of variables declaration//GEN-END:variables
 }

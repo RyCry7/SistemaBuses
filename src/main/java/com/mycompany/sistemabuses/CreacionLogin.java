@@ -27,7 +27,7 @@ public class CreacionLogin extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         try {
-            ImageIcon wallpaper = new ImageIcon("C:\\Users\\richi\\OneDrive\\Documentos\\NetBeansProjects\\SistemaBuses\\src\\main\\java\\Imagenes\\registro.png");
+            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\login.png");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(jlblcre_fondo.getWidth(), jlblcre_fondo.getHeight(), Image.SCALE_DEFAULT));
             jlblcre_fondo.setIcon(icono);
             this.repaint();
@@ -262,7 +262,7 @@ public class CreacionLogin extends javax.swing.JFrame {
         Connection connection = new Conexion().conectar();
 
         // Llamar al procedimiento almacenado para insertar un nuevo usuario
-        String sql = "{CALL InsertarUsuario(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call proyectobuses.InsertarUsuario(?, ?, ?, ?, ?, ?)}";
         CallableStatement statement = connection.prepareCall(sql);
         statement.setString(1, cedula);
         statement.setString(2, nombre);

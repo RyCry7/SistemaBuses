@@ -34,7 +34,8 @@ public class Administrador extends javax.swing.JFrame {
     public Administrador() {
         initComponents();
         mostrarDatosActualizar(tblParadas);
-         try {
+
+        try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\richi\\OneDrive\\Documentos\\NetBeansProjects\\SistemaBuses\\src\\main\\java\\Imagenes\\paradas.png");
             Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblFondo.getWidth(), lblFondo.getHeight(), Image.SCALE_DEFAULT));
             lblFondo.setIcon(icono);
@@ -42,9 +43,9 @@ public class Administrador extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         
 
     }
+
 
     public void mostrarDatosActualizar(JTable tabla) {
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
@@ -53,9 +54,9 @@ public class Administrador extends javax.swing.JFrame {
         try {
             Connection connection = new Conexion().conectar();
 
-            String sql = "SELECT p.PAR_Nombre, u.UBI_Nombre " +
-                         "FROM PARADAS p " +
-                         "JOIN UBICACION u ON p.UBI_ID = u.UBI_ID";
+            String sql = "SELECT p.PAR_Nombre, u.UBI_Nombre "
+                    + "FROM PARADAS p "
+                    + "JOIN UBICACION u ON p.UBI_ID = u.UBI_ID";
 
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet result = statement.executeQuery();
@@ -78,7 +79,7 @@ public class Administrador extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-    
+
     }
 
     @SuppressWarnings("unchecked")
@@ -345,30 +346,26 @@ public class Administrador extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtLatitudParActionPerformed
 
-    
-    
-   private int obtenerUbiID(String nombreUbicacion) throws SQLException, ClassNotFoundException {
-    int ubiID = -1; // Valor por defecto si no se encuentra el nombre de ubicación
+    private int obtenerUbiID(String nombreUbicacion) throws SQLException, ClassNotFoundException {
+        int ubiID = -1; // Valor por defecto si no se encuentra el nombre de ubicación
 
-    String sql = "SELECT ubi_id FROM ubicacion WHERE ubi_nombre = ?";
-    Connection connection = new Conexion().conectar();
-    PreparedStatement statement = connection.prepareStatement(sql);
-    statement.setString(1, nombreUbicacion);
-    ResultSet resultSet = statement.executeQuery();
+        String sql = "SELECT ubi_id FROM ubicacion WHERE ubi_nombre = ?";
+        Connection connection = new Conexion().conectar();
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, nombreUbicacion);
+        ResultSet resultSet = statement.executeQuery();
 
-    if (resultSet.next()) {
-        ubiID = resultSet.getInt("ubi_id");
+        if (resultSet.next()) {
+            ubiID = resultSet.getInt("ubi_id");
+        }
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+
+        return ubiID;
     }
 
-    resultSet.close();
-    statement.close();
-    connection.close();
-
-    return ubiID;
-}
-
-
-    
     /**
      * @param args the command line arguments
      */
