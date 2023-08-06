@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Icon;
@@ -36,6 +37,11 @@ public class Usuario extends javax.swing.JFrame {
         setLocationRelativeTo(null);
          MostrarcbxEmbarque();
          Mostrarcbxdesembarque() ;
+         MostrarcbxDestinoSalida();
+         MostrarcbxHorario();
+        inicializarComboBoxUbicaciones();
+        
+         
 
         try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaIbarra.jpg");
@@ -62,7 +68,48 @@ public class Usuario extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
+    
+   }
+    public void MostrarcbxHorario(int ubicacionID) {
+    cbxHorario.removeAllItems(); // Limpiar el combo box antes de cargar los horarios
+
+    Conexion c1 = new Conexion();
+    try {
+        String combo = "SELECT HOR_Hora FROM horario WHERE UBI_ID = ?;";
+        PreparedStatement statement = c1.prepareStatement(combo);
+        statement.setInt(1, ubicacionID);
+        ResultSet resulSet = statement.executeQuery();
+        
+        while (resulSet.next()) {
+            String hora = resulSet.getString("HOR_Hora");
+            cbxHorario.addItem(hora);
+        }
+        
+        resulSet.close();
+        statement.close();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+
+public void inicializarComboBoxUbicaciones() {
+    cbxDESTINOuSU.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String selectedUbicacion = (String) cbxDESTINOuSU.getSelectedItem();
+            if (selectedUbicacion != null) {
+                int ubicacionID = obtenerIDUbicacion(selectedUbicacion);
+                MostrarcbxHorario(ubicacionID);
+            }
+        }
+    });
+}
+
+    
+    
+    
+    
+    
     public void cargarPrecio() {
         DefaultTableModel modeloTabla = (DefaultTableModel) tblDatosPrecio.getModel();
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
@@ -109,9 +156,41 @@ public class Usuario extends javax.swing.JFrame {
         renderer.setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
         table.getColumnModel().getColumn(2).setCellRenderer(renderer);
     }
+     public void MostrarcbxHorario() {
+           Conexion c1 = new Conexion();
+        try {
+
+            String combo = "SELECT HOR_Hora FROM horario; ";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+
+                String nombre = resulSet.getString("HOR_Hora");
+                cbxHorario.addItem(nombre);
+
+            }
+        } catch (Exception e) {
+
+        }
+     }
+
     
    
-    
+    public void MostrarcbxDestinoSalida() {
+        Conexion c1 = new Conexion();
+        try {
+
+            String combo = "SELECT UBI_Nombre FROM ubicacion WHERE UBI_Nombre IN ('Ibarra', 'Yachay');";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+
+                String nombre = resulSet.getString("UBI_Nombre");
+                cbxDESTINOuSU.addItem(nombre);
+
+            }
+        } catch (Exception e) {
+
+        }
+    }
 
     public void MostrarcbxEmbarque() {
         Conexion c1 = new Conexion();
@@ -155,7 +234,7 @@ public class Usuario extends javax.swing.JFrame {
             while (resulSet.next()) {
 
                 String nombre = resulSet.getString("UBI_Nombre");
-                cbxHorarioAdmin.addItem(nombre);
+                cbxDESTINOuSU.addItem(nombre);
 
             }
         } catch (Exception e) {
@@ -261,6 +340,60 @@ public class Usuario extends javax.swing.JFrame {
         });
 
     }
+    public void MostrarHorarioUsuario() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) tblHorarioUsuario.getModel();
+    modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
+    
+    String horarioSeleccionado = (String) cbxHorario.getSelectedItem();
+    
+    if (horarioSeleccionado == null) {
+        // No se ha seleccionado ningún horario, no realizar ninguna acción
+        return;
+    }
+    boolean esYachay = horarioSeleccionado.equals("Yachay");
+    
+    Conexion c1 = new Conexion();
+    try {
+        String sql;
+        if (esYachay) {
+            sql = "SELECT PAR_Nombre "
+                + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeyachay), '%H:%i:%s') AS HoraSumada "
+                + "FROM paradas "
+                + "WHERE PAR_ID >= 13 AND PAR_ID <= 1 ";
+                
+        } else {
+            sql = "SELECT DISTINCT "
+                 + "paradas.PAR_Nombre AS Parada, "
+                 + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeibarra), '%H:%i:%s') AS HoraSumada "
+                 + "FROM horario "
+                 + "JOIN paradas ON true "
+                 + "WHERE horario.HOR_Hora = ?";
+        }
+
+        PreparedStatement statement = c1.prepareStatement(sql);
+        if (!esYachay) {
+            statement.setString(1, horarioSeleccionado);
+        }
+        ResultSet resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            String parada = resultSet.getString("Parada");
+            String horaSumada = resultSet.getString("HoraSumada");
+            
+            modeloTabla.addRow(new Object[]{ parada, horaSumada });
+        }
+        
+        resultSet.close();
+        statement.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+   
+
+   
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -283,10 +416,11 @@ public class Usuario extends javax.swing.JFrame {
         cbxDesembarqueUsu = new javax.swing.JComboBox<>();
         pnHorarioUsuario = new javax.swing.JPanel();
         lblHorarioAdmin = new javax.swing.JLabel();
-        cbxHorarioAdmin = new javax.swing.JComboBox<>();
+        cbxDESTINOuSU = new javax.swing.JComboBox<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tblHorarioAdmin = new javax.swing.JTable();
-        btnConsultarAdmin = new javax.swing.JButton();
+        tblHorarioUsuario = new javax.swing.JTable();
+        cbxHorario = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
         pnParadasUsuario = new javax.swing.JPanel();
         lblSelecionAdmin = new javax.swing.JLabel();
         cbxCiudadesUsu = new javax.swing.JComboBox<>();
@@ -397,13 +531,12 @@ public class Usuario extends javax.swing.JFrame {
 
         tbpUsuario.addTab("PRECIO", pnPrecioUsuario);
 
-        lblHorarioAdmin.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        lblHorarioAdmin.setText("SELECCIONE EL HORARIO A CONSULTAR");
+        lblHorarioAdmin.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lblHorarioAdmin.setText("SELECCIONE SU DESTINO DE SALIDA");
 
-        cbxHorarioAdmin.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        cbxHorarioAdmin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ibarra-Yachay 06:40 ", "Ibarra-Yachay 07:10", "Ibarra-Yachay 07:20", "Ibarra-Yachay 07:30", "Ibarra-Yachay 07:50" }));
+        cbxDESTINOuSU.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
 
-        tblHorarioAdmin.setModel(new javax.swing.table.DefaultTableModel(
+        tblHorarioUsuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -413,49 +546,69 @@ public class Usuario extends javax.swing.JFrame {
             new String [] {
                 "PARADA", "TIEMPO ESTIMADO DE LLEGADA"
             }
-        ));
-        jScrollPane3.setViewportView(tblHorarioAdmin);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
 
-        btnConsultarAdmin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnConsultarAdmin.setText("CONSULTA TIEMPO");
-        btnConsultarAdmin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConsultarAdminActionPerformed(evt);
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
+        jScrollPane3.setViewportView(tblHorarioUsuario);
+
+        cbxHorario.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxHorarioItemStateChanged(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        jLabel1.setText("SELECCIONE EL HORARIO ");
 
         javax.swing.GroupLayout pnHorarioUsuarioLayout = new javax.swing.GroupLayout(pnHorarioUsuario);
         pnHorarioUsuario.setLayout(pnHorarioUsuarioLayout);
         pnHorarioUsuarioLayout.setHorizontalGroup(
             pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
                 .addGroup(pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
                         .addGroup(pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(cbxHorarioAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(69, 69, 69)
-                                .addComponent(btnConsultarAdmin))
-                            .addComponent(lblHorarioAdmin)))
-                    .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
-                        .addGap(188, 188, 188)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(862, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(cbxDESTINOuSU, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblHorarioAdmin))
+                        .addGap(183, 183, 183)
+                        .addGroup(pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
+                                .addGap(42, 42, 42)
+                                .addComponent(jLabel1)))))
+                .addContainerGap(1017, Short.MAX_VALUE))
         );
         pnHorarioUsuarioLayout.setVerticalGroup(
             pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(lblHorarioAdmin)
+                .addGroup(pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHorarioAdmin)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxHorarioAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnConsultarAdmin))
-                .addGap(35, 35, 35)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(276, Short.MAX_VALUE))
+                    .addComponent(cbxDESTINOuSU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxHorario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(109, 109, 109)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(143, Short.MAX_VALUE))
         );
 
         tbpUsuario.addTab("HORARIO ", pnHorarioUsuario);
@@ -574,10 +727,6 @@ public class Usuario extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnConsultarAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarAdminActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnConsultarAdminActionPerformed
-
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
      cargarPrecio();
     }//GEN-LAST:event_btnConsultarActionPerformed
@@ -597,6 +746,11 @@ public class Usuario extends javax.swing.JFrame {
     private void cbxCiudadesUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCiudadesUsuActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxCiudadesUsuActionPerformed
+
+    private void cbxHorarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxHorarioItemStateChanged
+     MostrarHorarioUsuario();
+    
+    }//GEN-LAST:event_cbxHorarioItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -638,11 +792,12 @@ public class Usuario extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
-    private javax.swing.JButton btnConsultarAdmin;
     private javax.swing.JComboBox<String> cbxCiudadesUsu;
+    private javax.swing.JComboBox<String> cbxDESTINOuSU;
     private javax.swing.JComboBox<String> cbxDesembarqueUsu;
     private javax.swing.JComboBox<String> cbxEmbarque;
-    private javax.swing.JComboBox<String> cbxHorarioAdmin;
+    private javax.swing.JComboBox<String> cbxHorario;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -658,7 +813,7 @@ public class Usuario extends javax.swing.JFrame {
     private javax.swing.JPanel pnParadasUsuario;
     private javax.swing.JPanel pnPrecioUsuario;
     private javax.swing.JTable tblDatosPrecio;
-    private javax.swing.JTable tblHorarioAdmin;
+    private javax.swing.JTable tblHorarioUsuario;
     private javax.swing.JTabbedPane tbpUsuario;
     // End of variables declaration//GEN-END:variables
 }
