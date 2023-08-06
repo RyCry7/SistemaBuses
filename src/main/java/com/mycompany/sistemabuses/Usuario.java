@@ -40,35 +40,12 @@ public class Usuario extends javax.swing.JFrame {
          MostrarcbxDestinoSalida();
          MostrarcbxHorario();
         inicializarComboBoxUbicaciones();
+         MostrarcbxFavorito();
+       
         
          
 
-        try {
-            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaIbarra.jpg");
-            Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblImagen1.getWidth(), lblImagen1.getHeight(), Image.SCALE_DEFAULT));
-            lblImagen1.setIcon(icono);
-            this.repaint();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaImb.jpg");
-            Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblImagen1.getWidth(), lblImagen1.getHeight(), Image.SCALE_DEFAULT));
-            lblImagen1.setIcon(icono);
-            this.repaint();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\mapaUrcuqui.jpg");
-            Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblImagen1.getWidth(), lblImagen1.getHeight(), Image.SCALE_DEFAULT));
-            lblImagen1.setIcon(icono);
-            this.repaint();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    
+          
    }
     public void MostrarcbxHorario(int ubicacionID) {
     cbxHorario.removeAllItems(); // Limpiar el combo box antes de cargar los horarios
@@ -185,6 +162,22 @@ public void inicializarComboBoxUbicaciones() {
 
                 String nombre = resulSet.getString("UBI_Nombre");
                 cbxDESTINOuSU.addItem(nombre);
+
+            }
+        } catch (Exception e) {
+
+        }
+    }
+    public void MostrarcbxFavorito() {
+        Conexion c1 = new Conexion();
+        try {
+
+            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
+            ResultSet resulSet = c1.EjecutarSQL(combo);
+            while (resulSet.next()) {
+
+                String nombre = resulSet.getString("UBI_Nombre");
+                cbxUbicacionFavorita.addItem(nombre);
 
             }
         } catch (Exception e) {
@@ -340,47 +333,96 @@ public void inicializarComboBoxUbicaciones() {
         });
 
     }
-    public void MostrarHorarioUsuario() {
+   public void MostrarHorarioUsuario() {
     DefaultTableModel modeloTabla = (DefaultTableModel) tblHorarioUsuario.getModel();
     modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
-    
+
     String horarioSeleccionado = (String) cbxHorario.getSelectedItem();
-    
+
     if (horarioSeleccionado == null) {
         // No se ha seleccionado ningún horario, no realizar ninguna acción
         return;
     }
-    boolean esYachay = horarioSeleccionado.equals("Yachay");
-    
+
     Conexion c1 = new Conexion();
     try {
-        String sql;
-        if (esYachay) {
-            sql = "SELECT PAR_Nombre "
-                + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeyachay), '%H:%i:%s') AS HoraSumada "
-                + "FROM paradas "
-                + "WHERE PAR_ID >= 13 AND PAR_ID <= 1 ";
-                
-        } else {
-            sql = "SELECT DISTINCT "
-                 + "paradas.PAR_Nombre AS Parada, "
-                 + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeibarra), '%H:%i:%s') AS HoraSumada "
-                 + "FROM horario "
-                 + "JOIN paradas ON true "
-                 + "WHERE horario.HOR_Hora = ?";
-        }
+        String sql = "SELECT DISTINCT "
+                     + "paradas.PAR_Nombre AS Parada, "
+                     + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeibarra), '%H:%i:%s') AS HoraSumada "
+                     + "FROM horario "
+                     + "JOIN paradas ON true "
+                     + "WHERE horario.HOR_Hora = ?";
 
         PreparedStatement statement = c1.prepareStatement(sql);
-        if (!esYachay) {
-            statement.setString(1, horarioSeleccionado);
-        }
+        statement.setString(1, horarioSeleccionado);
         ResultSet resultSet = statement.executeQuery();
-        
+
         while (resultSet.next()) {
             String parada = resultSet.getString("Parada");
             String horaSumada = resultSet.getString("HoraSumada");
-            
-            modeloTabla.addRow(new Object[]{ parada, horaSumada });
+
+            modeloTabla.addRow(new Object[]{parada, horaSumada});
+        }
+
+        resultSet.close();
+        statement.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+   
+   public void MostrarHorarioUsuarioyACHAY() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) tblHorarioUsuario.getModel();
+    modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
+
+    Conexion c1 = new Conexion();
+    try {
+        String sql = "SELECT DISTINCT "
+                     + "paradas.PAR_Nombre AS Parada, "
+                     + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeyachay), '%H:%i:%s') AS HoraSumada "
+                     + "FROM horario "
+                     + "JOIN paradas ON true "
+                     + "WHERE (paradas.PAR_ID >= 13 OR paradas.PAR_ID <= 1) "
+                     + "ORDER BY paradas.PAR_ID ASC";
+
+        PreparedStatement statement = c1.prepareStatement(sql);
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            String parada = resultSet.getString("Parada");
+            String horaSumada = resultSet.getString("HoraSumada");
+
+            modeloTabla.addRow(new Object[]{parada, horaSumada});
+        }
+
+        resultSet.close();
+        statement.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+
+
+
+    public void MostrarParFavorita() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) tblUbicacion.getModel();
+    modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
+    
+    int idSeleccionado = cbxUbicacionFavorita.getSelectedIndex() + 1; // Sumar 1 porque los índices son 0-based
+    
+    Conexion c1 = new Conexion();
+    try {
+        String sql = "SELECT PAR_Nombre, UBI_Nombre FROM PARADAS INNER JOIN UBICACION ON PARADAS.UBI_ID = UBICACION.UBI_ID WHERE PARADAS.UBI_ID = ?";
+
+        PreparedStatement statement = c1.conectar().prepareStatement(sql);
+        statement.setInt(1, idSeleccionado);
+        ResultSet resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            String ubicacion = resultSet.getString("UBI_Nombre");
+            String parada = resultSet.getString("PAR_Nombre");
+            modeloTabla.addRow(new Object[]{ubicacion, parada});
         }
         
         resultSet.close();
@@ -389,6 +431,11 @@ public void inicializarComboBoxUbicaciones() {
         e.printStackTrace();
     }
 }
+    
+
+ 
+   
+
 
    
 
@@ -427,7 +474,11 @@ public void inicializarComboBoxUbicaciones() {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtblParadasCercanas = new javax.swing.JTable();
         lblSeleccionFavoritaUsu = new javax.swing.JLabel();
-        lblImagen1 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblUbicacion = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        cbxUbicacionFavorita = new javax.swing.JComboBox<>();
+        btnParadaFav = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -506,7 +557,7 @@ public void inicializarComboBoxUbicaciones() {
                     .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
                         .addGap(198, 198, 198)
                         .addComponent(btnConsultar)))
-                .addContainerGap(1168, Short.MAX_VALUE))
+                .addContainerGap(2132, Short.MAX_VALUE))
         );
         pnPrecioUsuarioLayout.setVerticalGroup(
             pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -526,7 +577,7 @@ public void inicializarComboBoxUbicaciones() {
                 .addComponent(btnConsultar)
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(356, Short.MAX_VALUE))
+                .addContainerGap(381, Short.MAX_VALUE))
         );
 
         tbpUsuario.addTab("PRECIO", pnPrecioUsuario);
@@ -593,7 +644,7 @@ public void inicializarComboBoxUbicaciones() {
                             .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
                                 .addGap(42, 42, 42)
                                 .addComponent(jLabel1)))))
-                .addContainerGap(1017, Short.MAX_VALUE))
+                .addContainerGap(1981, Short.MAX_VALUE))
         );
         pnHorarioUsuarioLayout.setVerticalGroup(
             pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -608,7 +659,7 @@ public void inicializarComboBoxUbicaciones() {
                     .addComponent(cbxHorario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(109, 109, 109)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(168, Short.MAX_VALUE))
         );
 
         tbpUsuario.addTab("HORARIO ", pnHorarioUsuario);
@@ -652,15 +703,61 @@ public void inicializarComboBoxUbicaciones() {
         lblSeleccionFavoritaUsu.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblSeleccionFavoritaUsu.setText("SELECCIONE SU PARADA FAVORITA");
 
+        tblUbicacion.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "UBICACION", "NOMBRE PARADA"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tblUbicacion);
+
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        jLabel2.setText("SELECCIONE LA UBICACION");
+
+        cbxUbicacionFavorita.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxUbicacionFavoritaItemStateChanged(evt);
+            }
+        });
+
+        btnParadaFav.setText("GUARDAR PARADA FAVORITA");
+        btnParadaFav.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                btnParadaFavItemStateChanged(evt);
+            }
+        });
+        btnParadaFav.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnParadaFavActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnParadasUsuarioLayout = new javax.swing.GroupLayout(pnParadasUsuario);
         pnParadasUsuario.setLayout(pnParadasUsuarioLayout);
         pnParadasUsuarioLayout.setHorizontalGroup(
             pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                 .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                         .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
@@ -673,8 +770,19 @@ public void inicializarComboBoxUbicaciones() {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                         .addGap(409, 409, 409)
-                        .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(764, Short.MAX_VALUE))
+                        .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(236, 236, 236)
+                        .addComponent(jLabel2))
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(218, 218, 218)
+                        .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(btnParadaFav))
+                            .addComponent(cbxUbicacionFavorita, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(1633, Short.MAX_VALUE))
         );
         pnParadasUsuarioLayout.setVerticalGroup(
             pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -684,16 +792,24 @@ public void inicializarComboBoxUbicaciones() {
                         .addGap(26, 26, 26)
                         .addComponent(lblSelecionAdmin)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(112, 112, 112))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnParadasUsuarioLayout.createSequentialGroup()
+                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblSeleccionFavoritaUsu)
-                        .addGap(18, 18, 18)))
-                .addComponent(lblImagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                        .addComponent(lblSeleccionFavoritaUsu)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxUbicacionFavorita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(btnParadaFav)))
+                .addGap(183, 183, 183))
         );
 
         tbpUsuario.addTab("PARADAS CERCANAS", pnParadasUsuario);
@@ -749,8 +865,82 @@ public void inicializarComboBoxUbicaciones() {
 
     private void cbxHorarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxHorarioItemStateChanged
      MostrarHorarioUsuario();
+     MostrarHorarioUsuarioyACHAY();
     
     }//GEN-LAST:event_cbxHorarioItemStateChanged
+
+    private void cbxUbicacionFavoritaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxUbicacionFavoritaItemStateChanged
+      MostrarParFavorita();
+    }//GEN-LAST:event_cbxUbicacionFavoritaItemStateChanged
+
+    private void btnParadaFavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParadaFavActionPerformed
+btnParadaFav.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Obtener la cédula ingresada por el usuario
+                String cedulaIngresada = JOptionPane.showInputDialog("Ingrese su número de cédula:");
+                if (cedulaIngresada != null && !cedulaIngresada.isEmpty()) {
+                    int cedula = Integer.parseInt(cedulaIngresada);
+
+                    // Obtener el índice seleccionado en el JComboBox
+                    int idSeleccionado = cbxUbicacionFavorita.getSelectedIndex() + 1;
+
+                    // Verificar si la cédula ingresada existe en la base de datos
+                    if (verificarCedulaExistente(cedula)) {
+                        // Guardar la cédula y el idSeleccionado en la tabla parfav
+                        guardarParadaFavorita(cedula, idSeleccionado);
+                        JOptionPane.showMessageDialog(null, "Parada guardada como favorita.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Usuario incorrecto. La cédula no existe.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese su número de cédula.");
+                }
+            }
+        });
+    }
+
+    private boolean verificarCedulaExistente(int cedula) {
+       Conexion c1 = new Conexion();
+    try {
+        String sql = "SELECT COUNT(*) FROM USUARIO WHERE USU_Cedula = ?";
+        PreparedStatement statement = c1.conectar().prepareStatement(sql);
+        statement.setInt(1, cedula);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        int count = resultSet.getInt(1);
+        resultSet.close();
+        statement.close();
+        return count > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+
+       
+    }
+
+    private void guardarParadaFavorita(int cedula, int idParada) {
+    Conexion c1 = new Conexion();
+    try {
+        String sql = "INSERT INTO PARFAV (USU_Cedula, PAR_ID) VALUES (?, ?)";
+        PreparedStatement statement = c1.conectar().prepareStatement(sql);
+        statement.setInt(1, cedula);
+        statement.setInt(2, idParada);
+        statement.executeUpdate();
+        statement.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+         
+    }//GEN-LAST:event_btnParadaFavActionPerformed
+
+    private void btnParadaFavItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_btnParadaFavItemStateChanged
+       
+        
+      
+    }//GEN-LAST:event_btnParadaFavItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -792,21 +982,24 @@ public void inicializarComboBoxUbicaciones() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
+    private javax.swing.JButton btnParadaFav;
     private javax.swing.JComboBox<String> cbxCiudadesUsu;
     private javax.swing.JComboBox<String> cbxDESTINOuSU;
     private javax.swing.JComboBox<String> cbxDesembarqueUsu;
     private javax.swing.JComboBox<String> cbxEmbarque;
     private javax.swing.JComboBox<String> cbxHorario;
+    private javax.swing.JComboBox<String> cbxUbicacionFavorita;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jtblParadasCercanas;
     private javax.swing.JLabel lblDesembarqueUsu;
     private javax.swing.JLabel lblEmbraque;
     private javax.swing.JLabel lblHorarioAdmin;
-    private javax.swing.JLabel lblImagen1;
     private javax.swing.JLabel lblSeleccionFavoritaUsu;
     private javax.swing.JLabel lblSelecionAdmin;
     private javax.swing.JPanel pnHorarioUsuario;
@@ -814,6 +1007,7 @@ public void inicializarComboBoxUbicaciones() {
     private javax.swing.JPanel pnPrecioUsuario;
     private javax.swing.JTable tblDatosPrecio;
     private javax.swing.JTable tblHorarioUsuario;
+    private javax.swing.JTable tblUbicacion;
     private javax.swing.JTabbedPane tbpUsuario;
     // End of variables declaration//GEN-END:variables
 }
