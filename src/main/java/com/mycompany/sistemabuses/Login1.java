@@ -24,9 +24,18 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class Login1 extends javax.swing.JFrame {
+ 
+ private String cedulaUsuario;
+    
+public static String regUsuario = "";    String regClave = "";
 
-    public static String regUsuario = "";
-    String regClave = "";
+
+    // ... other code ...
+
+    public static String getCedulaUsuario() {
+        return regUsuario;
+    }
+   
     
     public Login1() {
         initComponents();
@@ -39,8 +48,12 @@ public class Login1 extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        
     }
 
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,6 +70,7 @@ public class Login1 extends javax.swing.JFrame {
         lblCrearUsu = new javax.swing.JLabel();
         lblRegistro = new javax.swing.JLabel();
         pswClave = new javax.swing.JPasswordField();
+        chekConta = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
         lblImagen = new javax.swing.JLabel();
 
@@ -126,6 +140,13 @@ public class Login1 extends javax.swing.JFrame {
         });
         getContentPane().add(pswClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, 236, -1));
 
+        chekConta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chekContaMouseClicked(evt);
+            }
+        });
+        getContentPane().add(chekConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 260, -1, -1));
+
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Ingrese sus credenciales para iniciar sesion");
@@ -141,38 +162,46 @@ public class Login1 extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCrearUsuMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-try {
-    String usuario = txtUsuario.getText();
-    String clave = String.valueOf(pswClave.getPassword());
+  try {
+        String usuario = txtUsuario.getText();
+        String clave = String.valueOf(pswClave.getPassword());
 
-    String consulta = "SELECT USU_Usuario, ROL_ID FROM usuario WHERE USU_Usuario = ? AND USU_Contraseña = ?";
-    Conexion cn = new Conexion();
-    PreparedStatement pstmt = cn.prepareStatement(consulta);
-    pstmt.setString(1, usuario);
-    pstmt.setString(2, clave);
-    ResultSet rs = pstmt.executeQuery();
-
-    if (rs.next()) {
-        String rol = rs.getString("ROL_ID");
-        // Aquí puedes redirigir a diferentes JFrames según el rol del usuario
-        if (rol.equalsIgnoreCase("1")) {
-            Administrador admin = new Administrador();
-            admin.setVisible(true);
-        } else if (rol.equalsIgnoreCase("2")) {
-            Usuario user = new Usuario();
-            user.setVisible(true);
+        // Verificar si los campos están vacíos
+        if (usuario.isEmpty() || clave.isEmpty()) {
+            // Mostrar mensaje de campos vacíos
+            return; // Salir del método sin realizar el inicio de sesión
         }
 
-        // Cerrar el JFrame actual
-        this.dispose();
-    } else {
-        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+         String consulta = "SELECT USU_Cedula, ROL_ID FROM USUARIO WHERE USU_Usuario = ? AND USU_Contraseña = ?";
+        Conexion cn = new Conexion();
+        PreparedStatement pstmt = cn.prepareStatement(consulta);
+        pstmt.setString(1, usuario);
+        pstmt.setString(2, clave);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+    String rol = rs.getString("ROL_ID");
+    // Aquí puedes redirigir a diferentes JFrames según el rol del usuario
+    if (rol.equalsIgnoreCase("1")) {
+        Administrador admin = new Administrador();
+        admin.setVisible(true);
+    } else if (rol.equalsIgnoreCase("2")) {
+        Usuario user = new Usuario();
+        // Set the value of regUsuario with the cédula del usuario
+        regUsuario = usuario;
+        user.setVisible(true);
     }
-} catch (SQLException ex) {
-    Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
-}       catch (ClassNotFoundException ex) {
-            Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+
+    // Cerrar el JFrame actual
+    this.setVisible(false);
+        } else {
+            // Mostrar mensaje de error de inicio de sesión
         }
+    } catch (SQLException ex) {
+        Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }
 private void guardarRegistro(String registro) {
     String rutaArchivo = "C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\Login\\log.txt";
@@ -216,10 +245,21 @@ private void guardarRegistro(String registro) {
     }//GEN-LAST:event_lblRegistroMouseExited
 
     private void lblRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseClicked
-           CreacionLogin log = new CreacionLogin();
-           log.setVisible(true);
-           this.setVisible(false);
+          CreacionLogin registro = new CreacionLogin();
+    registro.setVisible(true);
+    this.dispose();
+
     }//GEN-LAST:event_lblRegistroMouseClicked
+
+    private void chekContaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chekContaMouseClicked
+      if(chekConta.isSelected()){
+            pswClave.setRequestFocusEnabled(false);
+            pswClave.setEchoChar('*');
+        } else {
+            pswClave.setRequestFocusEnabled(true);
+            pswClave.setEchoChar((char)0);
+        }
+    }//GEN-LAST:event_chekContaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -320,6 +360,7 @@ private void guardarRegistro(String registro) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chekConta;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

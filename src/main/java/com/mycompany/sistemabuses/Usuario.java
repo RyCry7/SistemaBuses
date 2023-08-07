@@ -7,13 +7,16 @@ package com.mycompany.sistemabuses;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Icon;
@@ -21,6 +24,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -29,6 +34,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Asus
  */
 public class Usuario extends javax.swing.JFrame {
+// Agregar fechas u horarios como objetos java.sql.Time
+    private String cedulaUsuario;
 
     public Usuario() {
         initComponents();
@@ -40,17 +47,21 @@ public class Usuario extends javax.swing.JFrame {
          MostrarcbxDestinoSalida();
          MostrarcbxHorario();
         inicializarComboBoxUbicaciones();
-         MostrarcbxFavorito();
-       
         
+        // Agregar fechas u horarios como objetos java.sql.Time
+
          
 
-          
+        
+       
+
+    
    }
     public void MostrarcbxHorario(int ubicacionID) {
     cbxHorario.removeAllItems(); // Limpiar el combo box antes de cargar los horarios
 
     Conexion c1 = new Conexion();
+    
     try {
         String combo = "SELECT HOR_Hora FROM horario WHERE UBI_ID = ?;";
         PreparedStatement statement = c1.prepareStatement(combo);
@@ -84,49 +95,59 @@ public void inicializarComboBoxUbicaciones() {
 
     
     
+
     
     
-    
-    public void cargarPrecio() {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tblDatosPrecio.getModel();
-        modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
+   public void cargarPrecio() {
+    String nombreCiudadEmbarque = (String) cbxEmbarque.getSelectedItem();
+    String nombreCiudadDesembarque = (String) cbxDesembarqueUsu.getSelectedItem();
 
-        String nombreCiudadEmbarque = (String) cbxEmbarque.getSelectedItem();
-        String nombreCiudadDesembarque = (String) cbxDesembarqueUsu.getSelectedItem();
+    int idCiudadEmbarque = obtenerIDUbicacion(nombreCiudadEmbarque);
+    int idCiudadDesembarque = obtenerIDUbicacion(nombreCiudadDesembarque);
 
-        int idCiudadEmbarque = obtenerIDUbicacion(nombreCiudadEmbarque);
-        int idCiudadDesembarque = obtenerIDUbicacion(nombreCiudadDesembarque);
+    try {
+        Connection connection = new Conexion().conectar();
 
-        try {
-            Connection connection = new Conexion().conectar();
+        String sql = "SELECT RUT_Tarifa FROM rutas WHERE (RUT_Ubi_A = ? AND RUT_Ubi_B = ?) OR (RUT_Ubi_A = ? AND RUT_Ubi_B = ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, idCiudadEmbarque);
+        statement.setInt(2, idCiudadDesembarque);
+        statement.setInt(3, idCiudadDesembarque);
+        statement.setInt(4, idCiudadEmbarque);
 
-            String sql = "SELECT RUT_Tarifa FROM rutas WHERE (RUT_Ubi_A = ? AND RUT_Ubi_B = ?) OR (RUT_Ubi_A = ? AND RUT_Ubi_B = ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, idCiudadEmbarque);
-            statement.setInt(2, idCiudadDesembarque);
-            statement.setInt(3, idCiudadDesembarque);
-            statement.setInt(4, idCiudadEmbarque);
-            
-            ResultSet result = statement.executeQuery();
+        ResultSet result = statement.executeQuery();
 
+        double totalTarifa = 0;
+        int count = 0;
+
+        // Calcular el promedio de las tarifas
+        while (result.next()) {
+            double tarifa = result.getDouble("RUT_Tarifa");
+            totalTarifa += tarifa;
+            count++;
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        if (count > 0) {
+            double promedioTarifa = totalTarifa / count;
+            // Formatear el promedioTarifa a dos decimales
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator('.');
-            DecimalFormat df = new DecimalFormat("0.00", symbols);
-            
-            // Agregar las tarifas a la tabla
-            while (result.next()) {
-                double tarifa = result.getDouble("RUT_Tarifa");
-                String tarifaFormateada = df.format(tarifa);
-                modeloTabla.addRow(new Object[]{nombreCiudadEmbarque, nombreCiudadDesembarque, tarifaFormateada});
-            }
-
-            result.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+            DecimalFormat df = new DecimalFormat("$0.00", symbols);
+            String tarifaFormateada = df.format(promedioTarifa);
+            lblPreTarifa.setText(tarifaFormateada);
+        } else {
+            lblPreTarifa.setText("$0.00"); // Si no hay tarifas, mostrar "N/A"
         }
+    } catch (SQLException | ClassNotFoundException ex) {
+        ex.printStackTrace();
+        lblPreTarifa.setText("$0.00"); // Si ocurre una excepción, mostrar "N/A"
     }
+}
+
 
     public void configurarFormatoCeldas(JTable table) {
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -162,22 +183,6 @@ public void inicializarComboBoxUbicaciones() {
 
                 String nombre = resulSet.getString("UBI_Nombre");
                 cbxDESTINOuSU.addItem(nombre);
-
-            }
-        } catch (Exception e) {
-
-        }
-    }
-    public void MostrarcbxFavorito() {
-        Conexion c1 = new Conexion();
-        try {
-
-            String combo = "SELECT UBI_Nombre FROM ubicacion; ";
-            ResultSet resulSet = c1.EjecutarSQL(combo);
-            while (resulSet.next()) {
-
-                String nombre = resulSet.getString("UBI_Nombre");
-                cbxUbicacionFavorita.addItem(nombre);
 
             }
         } catch (Exception e) {
@@ -333,113 +338,58 @@ public void inicializarComboBoxUbicaciones() {
         });
 
     }
+    
    public void MostrarHorarioUsuario() {
     DefaultTableModel modeloTabla = (DefaultTableModel) tblHorarioUsuario.getModel();
     modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
 
     String horarioSeleccionado = (String) cbxHorario.getSelectedItem();
+    String destinoSeleccionado = (String) cbxDESTINOuSU.getSelectedItem();
 
-    if (horarioSeleccionado == null) {
-        // No se ha seleccionado ningún horario, no realizar ninguna acción
+    if (horarioSeleccionado == null || destinoSeleccionado == null) {
+        // No se ha seleccionado algún horario o destino, no realizar ninguna acción
         return;
+    }
+
+    boolean esYachay = destinoSeleccionado.equals("Yachay");
+    String tiempoColumn;
+
+    if (esYachay) {
+        tiempoColumn = "TiempoDesdeYachay";
+    } else {
+        tiempoColumn = "TiempoDesdeIbarra";
     }
 
     Conexion c1 = new Conexion();
     try {
-        String sql = "SELECT DISTINCT "
-                     + "paradas.PAR_Nombre AS Parada, "
-                     + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeibarra), '%H:%i:%s') AS HoraSumada "
-                     + "FROM horario "
-                     + "JOIN paradas ON true "
-                     + "WHERE horario.HOR_Hora = ?";
+        String sql = "SELECT PAR_Nombre, TIME_FORMAT(ADDTIME(" + tiempoColumn + ", ?), '%H:%i:%s') AS HoraSumada " +
+                     "FROM PARADAS_TIEMPO_" + (esYachay ? "YACHAY" : "IBARRA");
 
         PreparedStatement statement = c1.prepareStatement(sql);
         statement.setString(1, horarioSeleccionado);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet.next()) {
-            String parada = resultSet.getString("Parada");
-            String horaSumada = resultSet.getString("HoraSumada");
-
-            modeloTabla.addRow(new Object[]{parada, horaSumada});
-        }
-
-        resultSet.close();
-        statement.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-   
-   public void MostrarHorarioUsuarioyACHAY() {
-    DefaultTableModel modeloTabla = (DefaultTableModel) tblHorarioUsuario.getModel();
-    modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
-
-    Conexion c1 = new Conexion();
-    try {
-        String sql = "SELECT DISTINCT "
-                     + "paradas.PAR_Nombre AS Parada, "
-                     + "TIME_FORMAT(ADDTIME(horario.HOR_Hora, paradas.tiempodesdeyachay), '%H:%i:%s') AS HoraSumada "
-                     + "FROM horario "
-                     + "JOIN paradas ON true "
-                     + "WHERE (paradas.PAR_ID >= 13 OR paradas.PAR_ID <= 1) "
-                     + "ORDER BY paradas.PAR_ID ASC";
-
-        PreparedStatement statement = c1.prepareStatement(sql);
-        ResultSet resultSet = statement.executeQuery();
-
-        while (resultSet.next()) {
-            String parada = resultSet.getString("Parada");
-            String horaSumada = resultSet.getString("HoraSumada");
-
-            modeloTabla.addRow(new Object[]{parada, horaSumada});
-        }
-
-        resultSet.close();
-        statement.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-
-
-
-    public void MostrarParFavorita() {
-    DefaultTableModel modeloTabla = (DefaultTableModel) tblUbicacion.getModel();
-    modeloTabla.setRowCount(0); // Limpiar la tabla antes de cargar los datos
-    
-    int idSeleccionado = cbxUbicacionFavorita.getSelectedIndex() + 1; // Sumar 1 porque los índices son 0-based
-    
-    Conexion c1 = new Conexion();
-    try {
-        String sql = "SELECT PAR_Nombre, UBI_Nombre FROM PARADAS INNER JOIN UBICACION ON PARADAS.UBI_ID = UBICACION.UBI_ID WHERE PARADAS.UBI_ID = ?";
-
-        PreparedStatement statement = c1.conectar().prepareStatement(sql);
-        statement.setInt(1, idSeleccionado);
-        ResultSet resultSet = statement.executeQuery();
-        
-        while (resultSet.next()) {
-            String ubicacion = resultSet.getString("UBI_Nombre");
             String parada = resultSet.getString("PAR_Nombre");
-            modeloTabla.addRow(new Object[]{ubicacion, parada});
+            String horaSumada = resultSet.getString("HoraSumada");
+            modeloTabla.addRow(new Object[]{parada, horaSumada});
         }
-        
+
         resultSet.close();
         statement.close();
     } catch (Exception e) {
         e.printStackTrace();
     }
 }
-    
-
- 
-   
 
 
-   
 
-   
+public void setCedulaUsuario(String cedulaUsuario) {
+        this.cedulaUsuario = cedulaUsuario;
+    }
+
+
+
 
 
     /**
@@ -455,12 +405,11 @@ public void inicializarComboBoxUbicaciones() {
         tbpUsuario = new javax.swing.JTabbedPane();
         pnPrecioUsuario = new javax.swing.JPanel();
         lblEmbraque = new javax.swing.JLabel();
-        lblDesembarqueUsu = new javax.swing.JLabel();
+        lblPreTarifa = new javax.swing.JLabel();
         btnConsultar = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblDatosPrecio = new javax.swing.JTable();
         cbxEmbarque = new javax.swing.JComboBox<>();
         cbxDesembarqueUsu = new javax.swing.JComboBox<>();
+        lblDesembarqueUsu1 = new javax.swing.JLabel();
         pnHorarioUsuario = new javax.swing.JPanel();
         lblHorarioAdmin = new javax.swing.JLabel();
         cbxDESTINOuSU = new javax.swing.JComboBox<>();
@@ -474,25 +423,22 @@ public void inicializarComboBoxUbicaciones() {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtblParadasCercanas = new javax.swing.JTable();
         lblSeleccionFavoritaUsu = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblUbicacion = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        cbxUbicacionFavorita = new javax.swing.JComboBox<>();
-        btnParadaFav = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tbpUsuario.setBackground(new java.awt.Color(0, 0, 0));
         tbpUsuario.setForeground(new java.awt.Color(255, 255, 255));
         tbpUsuario.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
 
         lblEmbraque.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        lblEmbraque.setText("Lugar de embarque");
+        lblEmbraque.setText("Lugar de partida");
 
-        lblDesembarqueUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        lblDesembarqueUsu.setText("Lugar de desembarque");
+        lblPreTarifa.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblPreTarifa.setText("$0.00");
 
         btnConsultar.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnConsultar.setText("CONSULTAR");
@@ -502,37 +448,22 @@ public void inicializarComboBoxUbicaciones() {
             }
         });
 
-        tblDatosPrecio.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Lugar Embarque", "Lugar de Desembarque", "Tarifa a Cancelar"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        cbxEmbarque.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        cbxEmbarque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxEmbarqueActionPerformed(evt);
             }
         });
-        jScrollPane2.setViewportView(tblDatosPrecio);
-
-        cbxEmbarque.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
 
         cbxDesembarqueUsu.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        cbxDesembarqueUsu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDesembarqueUsuActionPerformed(evt);
+            }
+        });
+
+        lblDesembarqueUsu1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblDesembarqueUsu1.setText("Lugar de destino");
 
         javax.swing.GroupLayout pnPrecioUsuarioLayout = new javax.swing.GroupLayout(pnPrecioUsuario);
         pnPrecioUsuario.setLayout(pnPrecioUsuarioLayout);
@@ -541,43 +472,49 @@ public void inicializarComboBoxUbicaciones() {
             .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
                 .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                                .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                                        .addGap(22, 22, 22)
-                                        .addComponent(lblEmbraque)))
-                                .addGap(101, 101, 101)
-                                .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblDesembarqueUsu)
-                                    .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
                         .addGap(198, 198, 198)
-                        .addComponent(btnConsultar)))
-                .addContainerGap(2132, Short.MAX_VALUE))
+                        .addComponent(btnConsultar))
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lblEmbraque))
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(lblPreTarifa)))
+                .addContainerGap(1443, Short.MAX_VALUE))
+            .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                    .addGap(22, 22, 22)
+                    .addComponent(lblDesembarqueUsu1)
+                    .addContainerGap(1606, Short.MAX_VALUE)))
         );
         pnPrecioUsuarioLayout.setVerticalGroup(
             pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblEmbraque)
-                    .addComponent(lblDesembarqueUsu))
+                .addContainerGap()
+                .addComponent(lblEmbraque)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(cbxEmbarque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(109, 109, 109)
+                        .addComponent(btnConsultar))
                     .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(btnConsultar)
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(381, Short.MAX_VALUE))
+                        .addGap(37, 37, 37)
+                        .addComponent(cbxDesembarqueUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblPreTarifa)))
+                .addContainerGap(413, Short.MAX_VALUE))
+            .addGroup(pnPrecioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnPrecioUsuarioLayout.createSequentialGroup()
+                    .addGap(75, 75, 75)
+                    .addComponent(lblDesembarqueUsu1)
+                    .addContainerGap(504, Short.MAX_VALUE)))
         );
 
         tbpUsuario.addTab("PRECIO", pnPrecioUsuario);
@@ -586,6 +523,11 @@ public void inicializarComboBoxUbicaciones() {
         lblHorarioAdmin.setText("SELECCIONE SU DESTINO DE SALIDA");
 
         cbxDESTINOuSU.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        cbxDESTINOuSU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDESTINOuSUActionPerformed(evt);
+            }
+        });
 
         tblHorarioUsuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -601,16 +543,9 @@ public void inicializarComboBoxUbicaciones() {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
         });
         jScrollPane3.setViewportView(tblHorarioUsuario);
@@ -618,6 +553,11 @@ public void inicializarComboBoxUbicaciones() {
         cbxHorario.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbxHorarioItemStateChanged(evt);
+            }
+        });
+        cbxHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxHorarioActionPerformed(evt);
             }
         });
 
@@ -644,7 +584,7 @@ public void inicializarComboBoxUbicaciones() {
                             .addGroup(pnHorarioUsuarioLayout.createSequentialGroup()
                                 .addGap(42, 42, 42)
                                 .addComponent(jLabel1)))))
-                .addContainerGap(1981, Short.MAX_VALUE))
+                .addContainerGap(1017, Short.MAX_VALUE))
         );
         pnHorarioUsuarioLayout.setVerticalGroup(
             pnHorarioUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -659,7 +599,7 @@ public void inicializarComboBoxUbicaciones() {
                     .addComponent(cbxHorario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(109, 109, 109)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
         );
 
         tbpUsuario.addTab("HORARIO ", pnHorarioUsuario);
@@ -693,32 +633,8 @@ public void inicializarComboBoxUbicaciones() {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.Double.class, java.lang.Double.class
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jtblParadasCercanas);
-
-        lblSeleccionFavoritaUsu.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        lblSeleccionFavoritaUsu.setText("SELECCIONE SU PARADA FAVORITA");
-
-        tblUbicacion.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "UBICACION", "NOMBRE PARADA"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -729,28 +645,22 @@ public void inicializarComboBoxUbicaciones() {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(tblUbicacion);
-
-        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        jLabel2.setText("SELECCIONE LA UBICACION");
-
-        cbxUbicacionFavorita.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbxUbicacionFavoritaItemStateChanged(evt);
+        jtblParadasCercanas.setColumnSelectionAllowed(true);
+        jtblParadasCercanas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtblParadasCercanasMouseClicked(evt);
             }
         });
+        jScrollPane1.setViewportView(jtblParadasCercanas);
+        jtblParadasCercanas.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jtblParadasCercanas.getColumnModel().getColumnCount() > 0) {
+            jtblParadasCercanas.getColumnModel().getColumn(0).setResizable(false);
+            jtblParadasCercanas.getColumnModel().getColumn(1).setResizable(false);
+            jtblParadasCercanas.getColumnModel().getColumn(2).setResizable(false);
+        }
 
-        btnParadaFav.setText("GUARDAR PARADA FAVORITA");
-        btnParadaFav.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                btnParadaFavItemStateChanged(evt);
-            }
-        });
-        btnParadaFav.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnParadaFavActionPerformed(evt);
-            }
-        });
+        lblSeleccionFavoritaUsu.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        lblSeleccionFavoritaUsu.setText("Paradas Cercanas, seleccione su favorita");
 
         javax.swing.GroupLayout pnParadasUsuarioLayout = new javax.swing.GroupLayout(pnParadasUsuario);
         pnParadasUsuario.setLayout(pnParadasUsuarioLayout);
@@ -759,86 +669,42 @@ public void inicializarComboBoxUbicaciones() {
             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
                 .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                                .addGap(65, 65, 65)
-                                .addComponent(lblSelecionAdmin))
-                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(199, 199, 199)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(65, 65, 65)
+                        .addComponent(lblSelecionAdmin))
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(409, 409, 409)
-                        .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(236, 236, 236)
-                        .addComponent(jLabel2))
+                        .addGap(200, 200, 200)
+                        .addComponent(lblSeleccionFavoritaUsu, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(218, 218, 218)
-                        .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)
-                                .addComponent(btnParadaFav))
-                            .addComponent(cbxUbicacionFavorita, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(1633, Short.MAX_VALUE))
+                        .addGap(85, 85, 85)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(894, Short.MAX_VALUE))
         );
         pnParadasUsuarioLayout.setVerticalGroup(
             pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSelecionAdmin)
+                    .addComponent(lblSeleccionFavoritaUsu))
                 .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(lblSelecionAdmin)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxCiudadesUsu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblSeleccionFavoritaUsu)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbxUbicacionFavorita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(pnParadasUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnParadasUsuarioLayout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(btnParadaFav)))
-                .addGap(183, 183, 183))
+                        .addGap(14, 14, 14)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
 
         tbpUsuario.addTab("PARADAS CERCANAS", pnParadasUsuario);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tbpUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tbpUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        jPanel1.add(tbpUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -865,83 +731,93 @@ public void inicializarComboBoxUbicaciones() {
 
     private void cbxHorarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxHorarioItemStateChanged
      MostrarHorarioUsuario();
-     MostrarHorarioUsuarioyACHAY();
     
     }//GEN-LAST:event_cbxHorarioItemStateChanged
 
-    private void cbxUbicacionFavoritaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxUbicacionFavoritaItemStateChanged
-      MostrarParFavorita();
-    }//GEN-LAST:event_cbxUbicacionFavoritaItemStateChanged
+    private void cbxDESTINOuSUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDESTINOuSUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxDESTINOuSUActionPerformed
 
-    private void btnParadaFavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParadaFavActionPerformed
-btnParadaFav.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Obtener la cédula ingresada por el usuario
-                String cedulaIngresada = JOptionPane.showInputDialog("Ingrese su número de cédula:");
-                if (cedulaIngresada != null && !cedulaIngresada.isEmpty()) {
-                    int cedula = Integer.parseInt(cedulaIngresada);
+    private void cbxHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxHorarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxHorarioActionPerformed
 
-                    // Obtener el índice seleccionado en el JComboBox
-                    int idSeleccionado = cbxUbicacionFavorita.getSelectedIndex() + 1;
+    
+    
+    private void jtblParadasCercanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblParadasCercanasMouseClicked
+ int filaSeleccionada = jtblParadasCercanas.getSelectedRow();
 
-                    // Verificar si la cédula ingresada existe en la base de datos
-                    if (verificarCedulaExistente(cedula)) {
-                        // Guardar la cédula y el idSeleccionado en la tabla parfav
-                        guardarParadaFavorita(cedula, idSeleccionado);
-                        JOptionPane.showMessageDialog(null, "Parada guardada como favorita.");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Usuario incorrecto. La cédula no existe.");
-                    }
+    if (filaSeleccionada != -1) {
+        // Obtener el nombre de la parada seleccionada en la tabla
+        String nombreParadaSeleccionada = (String) jtblParadasCercanas.getValueAt(filaSeleccionada, 0);
+
+        try {
+            Connection connection = new Conexion().conectar();
+
+            // Consulta para obtener el PAR_ID de la parada seleccionada
+            String sql = "SELECT PAR_ID FROM PARADAS WHERE PAR_Nombre = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, nombreParadaSeleccionada);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Obtener el PAR_ID de la parada seleccionada
+                int paradaID = resultSet.getInt("PAR_ID");
+                System.out.println("PAR_ID de la parada seleccionada: " + paradaID);
+
+                // Now, retrieve the USU_Cedula of the logged-in user using regUsuario
+                String sql2 = "SELECT USU_Cedula FROM USUARIO WHERE USU_Usuario = ?";
+                PreparedStatement statement2 = connection.prepareStatement(sql2);
+                statement2.setString(1, Login1.regUsuario); // Use regUsuario to get USU_Cedula
+                ResultSet resultSet2 = statement2.executeQuery();
+
+                if (resultSet2.next()) {
+                    // Obtener el USU_Cedula del usuario
+                    String cedulaUsuario = resultSet2.getString("USU_Cedula");
+                    System.out.println("Cédula del usuario: " + cedulaUsuario);
+
+                    // Call the stored procedure to insert the data
+                    String insertProcedure = "{CALL InsertarParadaFavorita(?, ?)}";
+                    CallableStatement callableStatement = connection.prepareCall(insertProcedure);
+                    callableStatement.setString(1, cedulaUsuario);
+                    callableStatement.setInt(2, paradaID);
+                    callableStatement.execute();
+                    callableStatement.close();
+
+                    // Show success message
+                    JOptionPane.showMessageDialog(this, "La parada favorita se guardó exitosamente.");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Por favor, ingrese su número de cédula.");
+                    System.out.println("No se encontró la cédula del usuario.");
                 }
+
+                resultSet2.close();
+                statement2.close();
+            } else {
+                System.out.println("No se encontró el PAR_ID para la parada seleccionada.");
             }
-        });
+
+            // Cerrar recursos
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+    }//GEN-LAST:event_jtblParadasCercanasMouseClicked
 
-    private boolean verificarCedulaExistente(int cedula) {
-       Conexion c1 = new Conexion();
-    try {
-        String sql = "SELECT COUNT(*) FROM USUARIO WHERE USU_Cedula = ?";
-        PreparedStatement statement = c1.conectar().prepareStatement(sql);
-        statement.setInt(1, cedula);
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        int count = resultSet.getInt(1);
-        resultSet.close();
-        statement.close();
-        return count > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-    }
+    private void cbxEmbarqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEmbarqueActionPerformed
+        // TODO add your handling code here:
+        cargarPrecio();
+    }//GEN-LAST:event_cbxEmbarqueActionPerformed
 
-       
-    }
+    private void cbxDesembarqueUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDesembarqueUsuActionPerformed
+        // TODO add your handling code here:
+        cargarPrecio();
+    }//GEN-LAST:event_cbxDesembarqueUsuActionPerformed
 
-    private void guardarParadaFavorita(int cedula, int idParada) {
-    Conexion c1 = new Conexion();
-    try {
-        String sql = "INSERT INTO PARFAV (USU_Cedula, PAR_ID) VALUES (?, ?)";
-        PreparedStatement statement = c1.conectar().prepareStatement(sql);
-        statement.setInt(1, cedula);
-        statement.setInt(2, idParada);
-        statement.executeUpdate();
-        statement.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-         
-    }//GEN-LAST:event_btnParadaFavActionPerformed
-
-    private void btnParadaFavItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_btnParadaFavItemStateChanged
-       
-        
-      
-    }//GEN-LAST:event_btnParadaFavItemStateChanged
-
+    
+     
     /**
      * @param args the command line arguments
      */
@@ -971,6 +847,66 @@ btnParadaFav.addActionListener(new ActionListener() {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -982,32 +918,26 @@ btnParadaFav.addActionListener(new ActionListener() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
-    private javax.swing.JButton btnParadaFav;
     private javax.swing.JComboBox<String> cbxCiudadesUsu;
     private javax.swing.JComboBox<String> cbxDESTINOuSU;
     private javax.swing.JComboBox<String> cbxDesembarqueUsu;
     private javax.swing.JComboBox<String> cbxEmbarque;
     private javax.swing.JComboBox<String> cbxHorario;
-    private javax.swing.JComboBox<String> cbxUbicacionFavorita;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jtblParadasCercanas;
-    private javax.swing.JLabel lblDesembarqueUsu;
+    private javax.swing.JLabel lblDesembarqueUsu1;
     private javax.swing.JLabel lblEmbraque;
     private javax.swing.JLabel lblHorarioAdmin;
+    private javax.swing.JLabel lblPreTarifa;
     private javax.swing.JLabel lblSeleccionFavoritaUsu;
     private javax.swing.JLabel lblSelecionAdmin;
     private javax.swing.JPanel pnHorarioUsuario;
     private javax.swing.JPanel pnParadasUsuario;
     private javax.swing.JPanel pnPrecioUsuario;
-    private javax.swing.JTable tblDatosPrecio;
     private javax.swing.JTable tblHorarioUsuario;
-    private javax.swing.JTable tblUbicacion;
     private javax.swing.JTabbedPane tbpUsuario;
     // End of variables declaration//GEN-END:variables
 }

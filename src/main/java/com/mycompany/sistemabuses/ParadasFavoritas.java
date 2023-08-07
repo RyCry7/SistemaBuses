@@ -5,6 +5,8 @@
 package com.mycompany.sistemabuses;
 
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -23,6 +25,17 @@ public class ParadasFavoritas extends javax.swing.JFrame {
     public ParadasFavoritas() {
         initComponents();
         mostrarDatosParFavoritas();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        // Agregar el WindowListener para escuchar el evento de cierre del JFrame
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                // Mostrar nuevamente el JFrame "Administrador" cuando se cierre "ParadasFavoritas"
+                Administrador administrador = new Administrador();
+                administrador.setVisible(true);
+            }
+        });
+        setLocationRelativeTo(null);
          
         try {
             ImageIcon wallpaper = new ImageIcon("C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\src\\main\\java\\com\\mycompany\\Imagenes\\login.png");
@@ -32,6 +45,9 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        
+       
     }
 
     public void mostrarDatosParFavoritas() {
@@ -71,13 +87,14 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblFormulario = new javax.swing.JTable();
-        lblFormulario = new javax.swing.JLabel();
+        lblFormulario1 = new javax.swing.JLabel();
         lblImagen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        tblFormulario.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(84, 229, 255), 1, true));
         tblFormulario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -99,13 +116,13 @@ public class ParadasFavoritas extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblFormulario);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 520, 250));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 660, 260));
 
-        lblFormulario.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
-        lblFormulario.setForeground(new java.awt.Color(255, 255, 255));
-        lblFormulario.setText("FORMULARI DE PARADAS FAVORITAS");
-        jPanel1.add(lblFormulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 350, -1));
-        jPanel1.add(lblImagen, new org.netbeans.lib.awtextra.AbsoluteConstraints(-3, -4, 590, 400));
+        lblFormulario1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        lblFormulario1.setForeground(new java.awt.Color(255, 255, 255));
+        lblFormulario1.setText("Paradas Favoritas");
+        jPanel1.add(lblFormulario1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, -1, -1));
+        jPanel1.add(lblImagen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 396));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,6 +164,21 @@ public class ParadasFavoritas extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ParadasFavoritas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -155,11 +187,13 @@ public class ParadasFavoritas extends javax.swing.JFrame {
             }
         });
     }
+    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblFormulario;
+    private javax.swing.JLabel lblFormulario1;
     private javax.swing.JLabel lblImagen;
     private javax.swing.JTable tblFormulario;
     // End of variables declaration//GEN-END:variables
