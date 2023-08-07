@@ -24,9 +24,18 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class Login1 extends javax.swing.JFrame {
+ 
+ private String cedulaUsuario;
+    
+public static String regUsuario = "";    String regClave = "";
 
-    public static String regUsuario = "";
-    String regClave = "";
+
+    // ... other code ...
+
+    public static String getCedulaUsuario() {
+        return regUsuario;
+    }
+   
     
     public Login1() {
         initComponents();
@@ -39,8 +48,12 @@ public class Login1 extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        
     }
 
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,6 +74,7 @@ public class Login1 extends javax.swing.JFrame {
         lblImagen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(700, 394));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
@@ -141,38 +155,46 @@ public class Login1 extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCrearUsuMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-try {
-    String usuario = txtUsuario.getText();
-    String clave = String.valueOf(pswClave.getPassword());
+  try {
+        String usuario = txtUsuario.getText();
+        String clave = String.valueOf(pswClave.getPassword());
 
-    String consulta = "SELECT USU_Usuario, ROL_ID FROM usuario WHERE USU_Usuario = ? AND USU_Contraseña = ?";
-    Conexion cn = new Conexion();
-    PreparedStatement pstmt = cn.prepareStatement(consulta);
-    pstmt.setString(1, usuario);
-    pstmt.setString(2, clave);
-    ResultSet rs = pstmt.executeQuery();
-
-    if (rs.next()) {
-        String rol = rs.getString("ROL_ID");
-        // Aquí puedes redirigir a diferentes JFrames según el rol del usuario
-        if (rol.equalsIgnoreCase("1")) {
-            Administrador admin = new Administrador();
-            admin.setVisible(true);
-        } else if (rol.equalsIgnoreCase("2")) {
-            Usuario user = new Usuario();
-            user.setVisible(true);
+        // Verificar si los campos están vacíos
+        if (usuario.isEmpty() || clave.isEmpty()) {
+            // Mostrar mensaje de campos vacíos
+            return; // Salir del método sin realizar el inicio de sesión
         }
 
-        // Cerrar el JFrame actual
-        this.dispose();
-    } else {
-        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+         String consulta = "SELECT USU_Cedula, ROL_ID FROM USUARIO WHERE USU_Usuario = ? AND USU_Contraseña = ?";
+        Conexion cn = new Conexion();
+        PreparedStatement pstmt = cn.prepareStatement(consulta);
+        pstmt.setString(1, usuario);
+        pstmt.setString(2, clave);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+    String rol = rs.getString("ROL_ID");
+    // Aquí puedes redirigir a diferentes JFrames según el rol del usuario
+    if (rol.equalsIgnoreCase("1")) {
+        Administrador admin = new Administrador();
+        admin.setVisible(true);
+    } else if (rol.equalsIgnoreCase("2")) {
+        Usuario user = new Usuario();
+        // Set the value of regUsuario with the cédula del usuario
+        regUsuario = usuario;
+        user.setVisible(true);
     }
-} catch (SQLException ex) {
-    Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
-}       catch (ClassNotFoundException ex) {
-            Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+
+    // Cerrar el JFrame actual
+    this.setVisible(false);
+        } else {
+            // Mostrar mensaje de error de inicio de sesión
         }
+    } catch (SQLException ex) {
+        Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(Login1.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }
 private void guardarRegistro(String registro) {
     String rutaArchivo = "C:\\Users\\Asus\\Documents\\ProyectoFinalll\\SistemaBuses\\Login\\log.txt";
@@ -216,7 +238,10 @@ private void guardarRegistro(String registro) {
     }//GEN-LAST:event_lblRegistroMouseExited
 
     private void lblRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistroMouseClicked
-      
+          CreacionLogin registro = new CreacionLogin();
+    registro.setVisible(true);
+    this.dispose();
+
     }//GEN-LAST:event_lblRegistroMouseClicked
 
     /**
