@@ -70,6 +70,7 @@ public static String regUsuario = "";    String regClave = "";
         lblCrearUsu = new javax.swing.JLabel();
         lblRegistro = new javax.swing.JLabel();
         pswClave = new javax.swing.JPasswordField();
+        chekConta = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
         lblImagen = new javax.swing.JLabel();
 
@@ -139,6 +140,13 @@ public static String regUsuario = "";    String regClave = "";
             }
         });
         getContentPane().add(pswClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, 236, -1));
+
+        chekConta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chekContaMouseClicked(evt);
+            }
+        });
+        getContentPane().add(chekConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 260, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -244,6 +252,16 @@ private void guardarRegistro(String registro) {
 
     }//GEN-LAST:event_lblRegistroMouseClicked
 
+    private void chekContaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chekContaMouseClicked
+        if(chekConta.isSelected()){
+            pswClave.setRequestFocusEnabled(false);
+            pswClave.setEchoChar('*');
+        } else {
+            pswClave.setRequestFocusEnabled(true);
+            pswClave.setEchoChar((char)0);
+        }
+    }//GEN-LAST:event_chekContaMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -295,6 +313,7 @@ private void guardarRegistro(String registro) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chekConta;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
