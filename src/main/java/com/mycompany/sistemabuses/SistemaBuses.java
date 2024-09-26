@@ -5,6 +5,7 @@
 package com.mycompany.sistemabuses;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -12,9 +13,9 @@ import java.sql.ResultSet;
  */
 public class SistemaBuses {
 
-     public static void main(String[] args)throws ClassNotFoundException {
+     public static void main(String[] args)throws ClassNotFoundException, SQLException {
          Conexion con =new  Conexion ();
-        ResultSet resultado = con.EjecutarSQL("SELECT * FROM roles");
+        ResultSet resultado = con.EjecutarSQL("SELECT * FROM usuario");
         try {
             while(resultado.next()){
               System.out.println(resultado.getString(2));
@@ -22,6 +23,10 @@ public class SistemaBuses {
         } catch (Exception e) {
             System.out.println("error de consulta");
         }
+        Login1 usu = new Login1();
+        usu.setVisible(true);
         
     }
+     
+     
 }

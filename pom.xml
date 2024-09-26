@@ -5,8 +5,8 @@
     <artifactId>SistemaBuses</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-     <dependencies>
-         <dependency>
+   <dependencies>
+        <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE160</version>
@@ -16,12 +16,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
         </dependency>
-              <dependency>
-            <groupId>com.toedter</groupId>
-            <artifactId>jcalendar</artifactId>
-            <version>1.4</version>
+        <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>Prestamo_Vehiculo</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+   
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>15</maven.compiler.source>
